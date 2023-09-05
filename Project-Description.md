@@ -1,15 +1,15 @@
 # Project Description
 
 ## Table of Contents
-- [Team](#Team)
-- [Project Topic Area](#Topic)
+- [Team](#team-pbj)
+- [Project Topic Area](#project-topic-area)
 
-## <a name="Team">Team PBJ</a>
+## Team PBJ
 - Jacob Kennedy (Computer Science)
 - Parth Patel (Computer Science)
 - Brendan Pollak (Computer Science)
 
-## <a name="Topic">Project Topic Area</a>
+## Project Topic Area
 - Web Development
 - Web Scraping
 - Cloud Computing
