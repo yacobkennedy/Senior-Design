@@ -1,4 +1,4 @@
-| Assignee | Task | Start Date | End Date |
+| Assignee | Milestone | Start Date | End Date |
 | -------- | ---- | ---------  | ------- |
 | All | Research front-end technologies for building a responsive website | 10/05/2023 | 10/20/2023 |
 | All | Develop a location-based search algorithm to provide tailored travel recommendations | 01/25/2022 | 02/20/2024 |
