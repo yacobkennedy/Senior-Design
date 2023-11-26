@@ -12,7 +12,7 @@ We're creating a site like TripAdvisor capable of returning events, attractions,
 ## [Project Description](./Project-Description.md)
 
 ## User Stories and Design Diagrams
-- [User Stories]("./homework-stuff/User stories.md")
+- [User Stories](./homework-stuff/UserStories.md)
 - [Design Diagrams](./homework-stuff/DesignDiagrams.md)
 - [Description of the Diagrams](./homework-stuff/DesignDiagrams.md)
 
