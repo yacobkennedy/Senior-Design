@@ -1,0 +1,104 @@
+.signupPage{
+    background-color: #494D5F;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.signupContainer{
+    background-color: #8458B3;
+    padding: 30px;
+    border-radius: 15px;
+    width: 50%;
+    height: 50%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inputContainer{
+    color: black;
+    text-align: center;
+    width: 100%;
+}
+
+.nameContainer{
+    justify-content: center;
+    display: flex;
+    height: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.firstnameContainer{
+    justify-content: center;
+    display: flex;
+    height: 40px;
+    padding-bottom: 20px;
+    width: 42.5%;
+}
+
+.lastnameContainer{
+    justify-content: center;
+    display: flex;
+    height: 40px;
+    padding-bottom: 20px;
+    width: 42.5%;
+}
+
+.firstnameInput{
+    border: none;
+    outline: none;
+    width: 75%;
+}
+
+.lastnameInput{
+    border: none;
+    outline: none;
+    width: 75%;
+}
+
+.emailContainer{
+    justify-content: center;
+    display: flex;
+    height: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.emailInput{
+    border: none;
+    outline: none;
+    width: 75%;
+}
+
+.passwordContainer{
+    justify-content: center;
+    display: flex;
+    height: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.passwordInput{
+    border: none;
+    outline: none;
+    width: 75%;
+}
+
+.buttonContainer{
+    justify-content: center;
+    padding: 30px
+}
+
+.button{
+    height: 40px;
+    width: 50%;
+    background-color: black;
+    color: white;
+    border-radius: 15px;
+}

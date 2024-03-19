@@ -1,0 +1,17 @@
+.homePage{
+    background-color: #494D5F;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Take full height of the viewport */
+}
+
+.button{
+    background-color: blue;
+    height: 50px;
+    width: 200px
+}
+
+.homeInfo{
+    flex: 90%
+}

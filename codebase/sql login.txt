@@ -1,0 +1,37 @@
+EXEC INTO DOCKER:
+
+docker exec -it containerid /bin/bash
+
+LOGIN TO MYSQL:
+
+mysql -u root -p
+1234
+
+Create databases:
+
+CREATE DATABASE userinfo;
+
+Go into database:
+
+USE userinfo;
+
+Show databases:
+
+SHOW DATABASES;
+
+Create table:
+CREATE TABLE userinfo(FIRSTNAME VARCHAR(255),LASTNAME VARCHAR(255),USERNAME VARCHAR(255),PASSWORD VARCHAR(255),TOKEN VARCHAR(255));
+
+Show tables:
+
+SHOW TABLES;
+
+Showing data in table:
+SELECT * FROM userinfo;
+
+Clear table values:
+
+UPDATE userinfo SET FIRSTNAME=null;
+UPDATE userinfo SET LASTNAME=null;
+UPDATE userinfo SET USERNAME=null;
+UPDATE userinfo SET PASSWORD=null;
