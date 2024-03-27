@@ -14,8 +14,29 @@
 }
 
 .button{
-    height: 30px;
-    width: 120px;
-    background-color: #E5EAF5;
-    border-radius: 15px
+    height: 40px;
+    width: 90px;
+    background-color: black;
+    border-radius: 20px;
+    border-style: solid;
+    color: #E5EAF5;
+    font-size: 16px;
+}
+
+.logoContainer{
+    position: absolute;
+    left: 10%;
+    display: flex;
+    align-items: center;
+}
+
+.logo{
+    height: 40px;
+    width: 40px;
+    margin-right: 8px;
+    border-radius: 20px;
+}
+
+.logoText{
+    font-size: 30px;
 }

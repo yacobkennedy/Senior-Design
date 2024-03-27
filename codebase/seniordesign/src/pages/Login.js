@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import styles from './Login.module.css'
 import axios from 'axios';
 import { Outlet, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 function Login() {
@@ -25,6 +26,13 @@ function Login() {
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value)
+    }
+
+    const navigate = useNavigate();
+
+    // Handle the event to navigate back to home page after successful login
+    const goHome = () => {
+        navigate("/");
     }
 
     // Function for handling login and checking credentials on the backend as well as pulling the token
@@ -70,6 +78,8 @@ function Login() {
 
             // Set session storage so user will be logged in for entirety of session
             sessionStorage.setItem("TOKEN", token)
+            // Set session storage so that the login button will be removed and replaced with the user profile bubble
+            sessionStorage.setItem("loginvisible", JSON.stringify(false))
         }
 
     }

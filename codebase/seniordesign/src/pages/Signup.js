@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from './Signup.module.css'
 import axios from 'axios';
 
@@ -33,6 +34,7 @@ function Signup() {
     const handleLastnameChange = (event) => {
         setLastname(event.target.value)
     }
+    
 
     // Function for signing up user and sending the API call
     async function handleSignup() {
