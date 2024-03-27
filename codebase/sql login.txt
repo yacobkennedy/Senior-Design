@@ -1,6 +1,6 @@
 EXEC INTO DOCKER:
 
-docker exec -it containerid /bin/bash
+docker exec -it 35 /bin/bash
 
 LOGIN TO MYSQL:
 
