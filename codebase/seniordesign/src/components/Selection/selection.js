@@ -5,6 +5,7 @@ import styles from './selection.module.css'
 function Selection() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [options, setOptions] = useState([]);
+  const [inputValue, setInputValue] = useState('');
 
   // Simulated data for autocomplete options
   const searchData = [
@@ -15,14 +16,26 @@ function Selection() {
     { value: 'Phoenix', label: 'Phoenix' },
   ];
 
-  // Function to handle search input change
-  // CHANGE THIS
-  const handleInputChange = (inputValue) => {
-    const filteredOptions = searchData.filter(option =>
-      option.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    console.log(filteredOptions)
-    setOptions(filteredOptions);
+  const setOption = (option) => {
+    console.log(option.value)
+    setSelectedOption(option.value)
+  }
+
+  const handleChange = (newValue, actionMeta) => {
+    if (actionMeta.action === 'input-change') {
+      setInputValue(newValue.value);
+      console.log(newValue.value)
+    } else {
+      setSelectedOption(newValue.value);
+      console.log(newValue.value)
+    }
+  };
+
+  const handleInputChange = (inputValue, actionMeta) => {
+    if (actionMeta.action === 'input-change') {
+      setInputValue(inputValue);
+      console.log(inputValue)
+    }
   };
 
   // Custom styles to control the visual styling of the Select box
@@ -54,13 +67,14 @@ function Selection() {
       <Select
         className={styles.selection}
         value={selectedOption}
-        onChange={setSelectedOption}
-        options={options}
-        onInputChange={handleInputChange}
+        onChange={handleChange}
+        options={searchData}
         placeholder="Find a Destination..."
         isClearable
         styles={customStyles}
         components={customComponents}
+        onInputChange={handleInputChange}
+        isSearchable
       />
   );
 }
