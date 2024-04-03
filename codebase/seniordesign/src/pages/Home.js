@@ -15,6 +15,7 @@ function Home() {
             <div className={styles.homeInfo}>
 
                 <div className={styles.header}>
+                    
                     <p> <b>Discover. Explore. Adventure.</b> </p>
                 </div>
 

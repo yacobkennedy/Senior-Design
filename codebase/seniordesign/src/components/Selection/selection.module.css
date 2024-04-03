@@ -1,3 +1,16 @@
 .selection{
     width: 100%;
 }
+
+.dropdownIndicator{
+    padding-right: 5px;
+}
+
+.searchButton{
+    background-color: tan;
+    height: 45px;
+    border-radius: 20px;
+    width: 100px;
+    color: black;
+    border-style: solid;
+}
