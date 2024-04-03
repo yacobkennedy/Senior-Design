@@ -1,17 +1,25 @@
 from flask import Flask, jsonify, request, json, Response
 import mysql.connector
 import uuid
+import requests
 
 app = Flask(__name__)
 
 incomes = [
     { 'description': 'salary', 'amount': 5000 }
 ]
+@app.route('/api/selection', methods=['POST'])
+def do_search():
+    userinfo = request.get_json()
+    LOCATION = userinfo['LOCATION']
+    #url = "https://api.content.tripadvisor.com/api/v1/location/search?language=en"
+    url = f"https://api.content.tripadvisor.com/api/v1/location/search?key=3EF0658EA2074AFD980A9729D442BE00&language=en&searchQuery={LOCATION}&language=en"
+    #url = "https://api.content.tripadvisor.com/api/v1/location/search?key=3EF0658EA2074AFD980A9729D442BE00&searchQuery=
+    headers = {"accept": "application/json"}
+    response = requests.get(url, headers=headers)
+    print(response.text)
 
-userinfo = {}
-SIZE = 21
-
-
+    return '', 204
 @app.route('/incomes')
 def get_incomes():
     return jsonify(incomes)
@@ -135,7 +143,6 @@ def check_userinfo(USERNAME, PASSWORD):
 
     print("TOKEN: ", TOKEN, " RESPONSE: ", RESPONSE_MSG)
     return TOKEN, RESPONSE_MSG
-
 
 if __name__ == '__main__':
     #app.debug = True

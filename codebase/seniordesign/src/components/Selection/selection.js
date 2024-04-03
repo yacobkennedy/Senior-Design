@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Select from 'react-select';
 import styles from './selection.module.css'
+import axios from 'axios'
 
 function Selection() {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -64,7 +65,17 @@ function Selection() {
     console.log('Search button clicked!');
     // Once search is hit, set the state to that value
     setSelectedOption({ value: inputValue, label: inputValue })
+    // May update to selectedOption or just change to use local storage instead.
+    APIsearch(inputValue)
   };
+  
+  async function APIsearch(input) {
+    var locationInfo = {
+      LOCATION: input
+    }
+    const response = await axios.post('/api/selection', locationInfo)
+    console.log(response)
+  }
 
   const disableEnterKey = (e) => {
     if (e.key === "Enter") {
