@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import Select from 'react-select';
 import styles from './selection.module.css'
 import axios from 'axios'
+import { useNavigate, useLocation } from "react-router-dom";
 
-function Selection() {
+function Selection({height, buttonHeight}) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [options, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -60,13 +61,17 @@ function Selection() {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleSearch = () => {
     // Perform search action here
     console.log('Search button clicked!');
     // Once search is hit, set the state to that value
     setSelectedOption({ value: inputValue, label: inputValue })
     // May update to selectedOption or just change to use local storage instead.
-    APIsearch(inputValue)
+    //APIsearch(inputValue)
+
+    navigate("/search");
   };
   
   async function APIsearch(input) {
@@ -118,7 +123,7 @@ function Selection() {
   const customStyles = {
     control: base => ({
       ...base,
-      height: 55,
+      height: height,
       borderRadius: 25,
       backgroundColor: "#E5EAF5",
       display: 'flex',
@@ -130,7 +135,7 @@ function Selection() {
   const CustomDropdownIndicator = (props) => {
     return (
       <div ref={searchButtonRef} className={styles.dropdownIndicator} onClick={handleSearch}>
-        <button type="button" className={styles.searchButton}>Search</button>
+        <button type="button" className={styles.searchButton} style={{height: buttonHeight}}>Search</button>
       </div>
     );
   };

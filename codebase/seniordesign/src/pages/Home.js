@@ -12,15 +12,15 @@ function Home() {
     return(
         <div className={styles.homePage}>
             <NavBar/>
-            <div className={styles.homeInfo}>
+            <div className={styles.homeContainer}>
 
                 <div className={styles.header}>
                     
                     <p> <b>Discover. Explore. Adventure.</b> </p>
                 </div>
 
-                <div className={styles.selectionContainer}>
-                    <Selection/>
+                <div className={styles.selectionWrapper}>
+                    <Selection height={55} buttonHeight={45}/>
                 </div>
             </div>
         </div>

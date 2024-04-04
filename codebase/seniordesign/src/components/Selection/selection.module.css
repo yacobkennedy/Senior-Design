@@ -1,5 +1,6 @@
 .selection{
     width: 100%;
+    height: 100%;
 }
 
 .dropdownIndicator{
@@ -8,7 +9,6 @@
 
 .searchButton{
     background-color: tan;
-    height: 45px;
     border-radius: 20px;
     width: 100px;
     color: black;
