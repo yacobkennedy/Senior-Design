@@ -18,8 +18,8 @@ def do_search():
     headers = {"accept": "application/json"}
     response = requests.get(url, headers=headers)
     print(response.text)
-
-    return '', 204
+    print(response.json())
+    return jsonify(response.json())
 @app.route('/incomes')
 def get_incomes():
     return jsonify(incomes)
@@ -36,6 +36,9 @@ def add_user():
     ## DELETE LATER
     print(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN)
 
+    ## NEED TO ADD CHECK FOR DUPLICATE USERS
+    ## ALSO, ENSURE THAT INPUT IS VALID
+    ## THIS INVOLVES NO EMPTY INPUT ETC.
     add_userinfo(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN)
 
     return '', 204
