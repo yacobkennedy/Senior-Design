@@ -132,7 +132,13 @@ function Search() {
         ]
       }
 
+    // First result in the list to show as top result
     const topResult = data.data.shift()
+
+    const handleDivClick = (locationId) => {
+        console.log("Clicked on div with location ID:", locationId);
+        // ADD API CALL WITH LOCATION ID HERE
+      };
 
       return(
         <div className={styles.searchPage}>
@@ -152,7 +158,7 @@ function Search() {
 
                     </div>
 
-                    <div className={styles.topResultCard}>
+                    <div className={styles.topResultCard} onClick={() => handleDivClick(topResult.location_id)}>
 
                         <img className={styles.image} src={goodplaces} alt="location image"/>
 
@@ -174,7 +180,7 @@ function Search() {
                     </div>
 
                     {data.data.map((item) => (
-                        <div key={item.location_id} className={styles.resultsCard}>
+                        <div key={item.location_id} className={styles.resultsCard} onClick={() => handleDivClick(item.location_id)}>
                             <img className={styles.image} src={goodplaces} alt="location image"/>
 
                             <div>

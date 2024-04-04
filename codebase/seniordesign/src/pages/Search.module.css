@@ -33,6 +33,7 @@
 .topResultCard{
     display: flex;
     border: 1px solid #ccc;
+    cursor: pointer;
 }
 
 .image{
@@ -60,4 +61,5 @@
 .resultsCard{
     display: flex;
     border: 1px solid #ccc;
+    cursor: pointer;
 }
