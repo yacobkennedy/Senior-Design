@@ -4,6 +4,7 @@ import NavBar from '../components/NavBar/navbar';
 import goodplaces from '../images/goodplaces.png'
 
 function Location(){
+    // Need this to populate after a choice is made on the search page and the location ID is sent to the API
     var data = {
         "data": [
           {
