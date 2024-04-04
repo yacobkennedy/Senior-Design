@@ -5,63 +5,35 @@ import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Selection({height, buttonHeight}) {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [options, setOptions] = useState([]);
+  // State for tracking input value being typed into the search bar
   const [inputValue, setInputValue] = useState('');
-  const [menuIsOpen, setMenuIsOpen] = useState(false);
+
+  // State for tracking final value in search bar after user is done typing
+  const [selectedOption, setSelectedOption] = useState('');
 
   // Simulated data for autocomplete options
   const searchData = [
-    { value: 'New York', label: 'New York' },
-    { value: 'Los Angeles', label: 'Los Angeles' },
-    { value: 'Chicago', label: 'Chicago' },
-    { value: 'Houston', label: 'Houston' },
-    { value: 'Phoenix', label: 'Phoenix' },
+    //{ value: 'New York', label: 'New York' }
   ];
 
-  const searchButtonRef = useRef(null);
-  const selectRef = useRef(null);
+  // Consts for navigating between pages and tracking keypresses
+  const navigate = useNavigate();
+  const inputRef = useRef(null);
+  const buttonRef = useRef(null);
 
-  // Adds refs to take away the enter keypress problems with selection and link the enter key to search button
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'Enter') {
-        searchButtonRef.current.click();
-      }
-    };
-
-    const input = selectRef.current && selectRef.current.select && selectRef.current.select.input;
-    if (input) {
-      input.addEventListener('keydown', handleKeyDown);
+  // Function to use enter to trigger button
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      buttonRef.current.click(); // Trigger button click
     }
-
-    return () => {
-      if (input) {
-        input.removeEventListener('keydown', handleKeyDown);
-      }
-    };
-  }, []);
+  };
 
   // Functions used by the react select to change input, search for stuff, etc
-
-  const handleChange = (newValue, actionMeta) => {
-    if (actionMeta.action === 'input-change') {
-      setInputValue(newValue.value);
-      console.log("inputchange", newValue.value)
-    } else {
-      setSelectedOption(newValue);
-      console.log("option", newValue)
-    }
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+    console.log("current: ", event.target.value);
   };
-
-  const handleInputChange = (inputValue, actionMeta) => {
-    if (actionMeta.action === 'input-change') {
-      setInputValue(inputValue);
-      console.log("input", inputValue)
-    }
-  };
-
-  const navigate = useNavigate();
 
   const handleSearch = () => {
     // Perform search action here
@@ -73,6 +45,7 @@ function Selection({height, buttonHeight}) {
 
     navigate("/search");
   };
+  
   
   async function APIsearch(input) {
     var data
@@ -111,58 +84,20 @@ function Selection({height, buttonHeight}) {
     // some form of information
   }
 
-  const disableEnterKey = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      e.stopPropagation();
-      searchButtonRef.current.click();
-    }
-  }
-
-  // Custom styles to control the visual styling of the Select box
-  const customStyles = {
-    control: base => ({
-      ...base,
-      height: height,
-      borderRadius: 25,
-      backgroundColor: "#E5EAF5",
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    })
-  };
-
-  const CustomDropdownIndicator = (props) => {
-    return (
-      <div ref={searchButtonRef} className={styles.dropdownIndicator} onClick={handleSearch}>
-        <button type="button" className={styles.searchButton} style={{height: buttonHeight}}>Search</button>
-      </div>
-    );
-  };
-
-  // Custom components to change the look of the Select component
-  // DropdownIndicator: CustomDropdownIndicator,
-  const customComponents = {
-    DropdownIndicator: CustomDropdownIndicator,
-    IndicatorSeparator:() => null,
-  }
-
 
   return (
-      <Select
+    <div className={styles.selectionContainer}>
+      <input 
         className={styles.selection}
-        value={selectedOption}
-        onChange={handleChange}
-        options={searchData}
-        placeholder="Find a Destination..."
-        isClearable
-        styles={customStyles}
-        components={customComponents}
-        onInputChange={handleInputChange}
-        isSearchable
-        onKeyDown={disableEnterKey}
-        ref={selectRef}
+        ref={inputRef}
+        style={{height: height}}
+        type='search'
+        onChange={handleInputChange}
+        onKeyDown={handleKeyPress}
+        placeholder='Find a Destination...'
       />
+      <button ref={buttonRef} className={styles.searchButton} style={{height: buttonHeight}} onClick={handleSearch}>Search</button>
+    </div>
   );
 }
 
