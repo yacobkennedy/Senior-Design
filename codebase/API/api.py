@@ -53,6 +53,37 @@ def detail_search():
     return jsonify(response.json())
 
 
+@app.route('/api/location', methods=['POST'])
+def location_search():
+    data = request.get_json()
+    id = data['ID']
+
+    # Get details from tripadvisor about location
+    url = f"https://api.content.tripadvisor.com/api/v1/location/{id}/details?key=3EF0658EA2074AFD980A9729D442BE00&language=en&currency=USD"
+    headers = {"accept": "application/json"}
+    response = requests.get(url, headers=headers)
+    print(response.json())
+    responsedict = response.json()
+
+    # Get images from tripadvisor about location
+    imageurl = f"https://api.content.tripadvisor.com/api/v1/location/{id}/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
+    headers = {"accept": "application/json"}
+    imageresponse = requests.get(imageurl, headers=headers)
+    print(imageresponse.json())
+    imagedict = imageresponse.json()
+
+    # Combine both responses into one for building the Location.js page in react
+    largeURLs = []
+    for item in imagedict['data']:
+        large_url = item['images']['large']['url']
+        largeURLs.append(large_url)
+
+    responsedict['images'] = largeURLs
+
+
+    return jsonify(responsedict)
+
+
 @app.route('/api/selection', methods=['POST'])
 def do_search():
     userinfo = request.get_json()
@@ -68,14 +99,17 @@ def do_search():
     for row in responsedict['data']:
         locationid = row['location_id']
 
-        imageurl = f"https://api.content.tripadvisor.com/api/v1/location/{locationid}/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
-        imageheaders = {"accept": "application/json"}
-        imageresponse = requests.get(imageurl, headers=headers)
-        imagedict = imageresponse.json()
-        image = imagedict['data'][0]['images']['small']['url']
-
-        row['image'] = image
-
+        ## Adds the image link to each object in the response
+        try:
+            imageurl = f"https://api.content.tripadvisor.com/api/v1/location/{locationid}/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
+            imageheaders = {"accept": "application/json"}
+            imageresponse = requests.get(imageurl, headers=headers)
+            imagedict = imageresponse.json()
+            #print(imagedict)
+            image = imagedict['data'][0]['images']['small']['url']
+            row['image'] = image
+        except:
+            row['image'] = '../images/placeholder.png'
 
     print(responsedict)
 

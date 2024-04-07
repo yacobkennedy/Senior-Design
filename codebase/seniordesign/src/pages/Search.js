@@ -3,20 +3,36 @@ import styles from './Search.module.css';
 import NavBar from '../components/NavBar/navbar';
 import Selection from '../components/Selection/selection';
 import goodplaces from '../images/goodplaces.png';
-import { useLocation } from "react-router-dom";
+import placeholder from '../images/placeholder.png'
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from 'axios';
 
 function Search() {
+    // Navigation for between pages
+    const navigate = useNavigate();
+
     // React router location to transfer data between selection and search when search is called
     const location = useLocation()
     const data = location.state
     
     // First result in the list to show as top result
     const topResult = data.shift()
-    console.log("topresult", topResult)
 
-    const handleDivClick = (locationId) => {
+    const handleDivClick = async (locationId) => {
         console.log("Clicked on div with location ID:", locationId);
         // ADD API CALL WITH LOCATION ID HERE
+        var location = {
+          ID: locationId
+        }
+
+        try {
+          const response = await axios.post('/api/location', location)
+          const data = response.data
+
+          navigate("/location", { state: data });
+        } catch (err) {
+          console.log('Error: ', err)
+        }
       };
 
       return(
@@ -39,7 +55,7 @@ function Search() {
 
                     <div className={styles.topResultCard} onClick={() => handleDivClick(topResult.location_id)}>
 
-                        <img className={styles.image} src={topResult.image} alt="location image"/>
+                        <img className={styles.image} src={topResult.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
 
                         <div>
 
@@ -60,7 +76,7 @@ function Search() {
 
                     {data.map((item) => (
                         <div key={item.location_id} className={styles.resultsCard} onClick={() => handleDivClick(item.location_id)}>
-                            <img className={styles.image} src={item.image} alt="location image"/>
+                            <img className={styles.image} src={item.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
 
                             <div>
                                 <h3 className={styles.resultsName}>{item.name}</h3>

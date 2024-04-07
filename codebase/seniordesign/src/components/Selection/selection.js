@@ -32,7 +32,7 @@ function Selection({ height, buttonHeight }) {
     // Functions used by the react select to change input, search for stuff, etc
     const handleInputChange = (event) => {
       setInputValue(event.target.value);
-      console.log("current: ", event.target.value);
+      //console.log("current: ", event.target.value);
     };
 
     const handleSearch = async() => {
