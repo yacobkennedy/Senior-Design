@@ -10,6 +10,49 @@ incomes = [
 ]
 
 
+@app.route('/incomes')
+def get_incomes():
+    return jsonify(incomes)
+
+
+@app.route('/api/images', methods=['POST'])
+def image_search():
+    data = request.get_json()
+    print(data)
+    id = data['ID']
+    #                                                          location ID           API key
+    # url = "https://api.content.tripadvisor.com/api/v1/location/17597950/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
+    url = f"https://api.content.tripadvisor.com/api/v1/location/{id}/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
+    headers = {"accept": "application/json"}
+    response = requests.get(url, headers=headers)
+    print(response.json())
+    return jsonify(response.json())
+
+
+@app.route('/api/reviews', methods=['POST'])
+def review_search():
+    data = request.get_json()
+    id = data['ID']
+
+    url = f"https://api.content.tripadvisor.com/api/v1/location/{id}/reviews?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
+    headers = {"accept": "application/json"}
+    response = requests.get(url, headers=headers)
+    print(response.json)
+    return jsonify(response.json())
+
+
+@app.route('/api/details', methods=['POST'])
+def detail_search():
+    data = request.get_json()
+    id = data['ID']
+
+    url = f"https://api.content.tripadvisor.com/api/v1/location/{id}/details?key=3EF0658EA2074AFD980A9729D442BE00&language=en&currency=USD"
+    headers = {"accept": "application/json"}
+    response = requests.get(url, headers=headers)
+    print(response.json())
+    return jsonify(response.json())
+
+
 @app.route('/api/selection', methods=['POST'])
 def do_search():
     userinfo = request.get_json()
@@ -20,12 +63,23 @@ def do_search():
     headers = {"accept": "application/json"}
     response = requests.get(url, headers=headers)
     print(response.json())
-    return jsonify(response.json())
+
+    responsedict = response.json()
+    for row in responsedict['data']:
+        locationid = row['location_id']
+
+        imageurl = f"https://api.content.tripadvisor.com/api/v1/location/{locationid}/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
+        imageheaders = {"accept": "application/json"}
+        imageresponse = requests.get(imageurl, headers=headers)
+        imagedict = imageresponse.json()
+        image = imagedict['data'][0]['images']['small']['url']
+
+        row['image'] = image
 
 
-@app.route('/incomes')
-def get_incomes():
-    return jsonify(incomes)
+    print(responsedict)
+
+    return jsonify(responsedict)
 
 
 @app.route('/api/signup', methods=['POST'])

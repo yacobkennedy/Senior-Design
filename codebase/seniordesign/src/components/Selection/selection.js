@@ -5,61 +5,124 @@ import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Selection({ height, buttonHeight }) {
-  // State for tracking input value being typed into the search bar
-  const [inputValue, setInputValue] = useState('');
+    // State for tracking input value being typed into the search bar
+    const [inputValue, setInputValue] = useState('');
 
-  // State for tracking final value in search bar after user is done typing
-  const [selectedOption, setSelectedOption] = useState('');
+    // State for tracking final value in search bar after user is done typing
+    const [selectedOption, setSelectedOption] = useState('');
 
-  // Simulated data for autocomplete options
-  const searchData = [
-    //{ value: 'New York', label: 'New York' }
-  ];
+    // Simulated data for autocomplete options
+    const searchData = [
+      //{ value: 'New York', label: 'New York' }
+    ];
 
-  // Consts for navigating between pages and tracking keypresses
-  const navigate = useNavigate();
-  const inputRef = useRef(null);
-  const buttonRef = useRef(null);
+    // Consts for navigating between pages and tracking keypresses
+    const navigate = useNavigate();
+    const inputRef = useRef(null);
+    const buttonRef = useRef(null);
 
-  // Function to use enter to trigger button
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      buttonRef.current.click(); // Trigger button click
-    }
-  };
+    // Function to use enter to trigger button
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        buttonRef.current.click(); // Trigger button click
+      }
+    };
 
-  // Functions used by the react select to change input, search for stuff, etc
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-    console.log("current: ", event.target.value);
-  };
+    // Functions used by the react select to change input, search for stuff, etc
+    const handleInputChange = (event) => {
+      setInputValue(event.target.value);
+      console.log("current: ", event.target.value);
+    };
 
-  const handleSearch = () => {
-    // Perform search action here
-    console.log('Search button clicked!');
-    // Once search is hit, set the state to that value
-    setSelectedOption({ value: inputValue, label: inputValue })
-    // May update to selectedOption or just change to use local storage instead.
-    //APIsearch(inputValue)
+    const handleSearch = async() => {
+      var data;
+      // Perform search action here
+      console.log('Search button clicked!');
+      // Once search is hit, set the state to that value
+      setSelectedOption(inputValue)
+      // May update to selectedOption or just change to use local storage instead.
+      try {
+        data = await APIsearch(inputValue);
 
-    navigate("/search");
-  };
+        navigate("/search", { state: data });
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
   
   
-  async function APIsearch(input) {
-    var data
-    var locationInfo = {
-      LOCATION: input
+    async function APIsearch(input) {
+      var data
+      var locationInfo = {
+        LOCATION: input
+      }
+      try {
+        const response = await axios.post('/api/selection', locationInfo);
+        data = response.data.data;
+        console.log(data);
+        return data;
+      } catch (err) {
+        console.log('Error: ', err);
+        throw err; // Re-throwing the error so it can be caught by the caller
+      }
+    //const image_data = image_search()
+    //const review_data = review_search()
+    //const detail_data = detail_search()
+
+  }
+
+      
+    async function image_search(id) {
+      var location = {
+          ID: id
+      }
+      var output
+
+      try {
+        const response = await axios.post('/api/images', location)
+        output = response.data
+      } catch (err) {
+        console.log('Error: ', err)
+      }
+
+      console.log(output)
+      return output
     }
-    try {
-      const response = await axios.post('/api/selection', locationInfo)
-      data = response.data
-    } catch (err) {
-      console.log('Error: ', err)
+
+    async function review_search(id) {
+      var location = {
+          ID: id
+      }
+      var output
+
+      try {
+        const response = await axios.post('/api/reviews', location)
+        output = response.data
+      } catch (err) {
+        console.log('Error: ', err)
+      }
+
+      console.log(output)
+      return output
     }
-    
-    console.log(data)
+
+    async function detail_search(id) {
+      var location = {
+          ID: id
+      }
+      var output
+
+      try {
+        const response = await axios.post('/api/details', location)
+        output = response.data
+      } catch (err) {
+        console.log('Error: ', err)
+      }
+
+      console.log(output)
+      return output
+    }
 
     // RESPONSE IS NOW FORMATTED CORRECTLY
     // NEED TO NOW REDIRECT TO A DIFFERENT HTML PAGE THAT SIMPLY LISTS EACH OF THE STRINGS 
@@ -82,7 +145,6 @@ function Selection({ height, buttonHeight }) {
     // Additional option is to webscrape instead (JAKE OPTION) we'd need to figure out how to do that
     // can maybe just webscrape images and details which will reduce API calls but still allow us to provide 
     // some form of information
-  }
 
 
   return (
