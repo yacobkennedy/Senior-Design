@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Outlet, Link } from "react-router-dom";
 import goodplaces from '../../images/goodplaces.png';
 import Profile from '../Profile/profile';
+import axios from 'axios';
 
 function NavBar() {
   // Code to initially set visible sessionstorage value but not reset it every time component is rerendered
@@ -24,6 +25,7 @@ function NavBar() {
       // Check if the click occurred outside of the dropdown menu
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdown(false);
+        setTimeout(() => setShowFavorites(false), 2000);
       }
     };
 
@@ -48,14 +50,33 @@ function NavBar() {
 
   const navigate = useNavigate();
 
+  var favoriteItems = ["hello"];
+
   // Handle the button click to navigate to the Login page
   const useLogin = () => {
     navigate("/login");
   }
 
   // Set dropdown to opposite boolean value when the profile is clicked on again
-  const toggleDropdown = () => {
+  const toggleDropdown = async() => {
     setDropdown(!dropdown)
+    // Delay showing favorites list to allow user to hover over it
+    setTimeout(() => setShowFavorites(!dropdown), 1000);
+
+    //Populate favorites list when profile is clicked
+    var favorite = {
+      TOKEN: sessionStorage.getItem('TOKEN')
+    }
+
+    try{
+      // Need to add the location name in the favorites table so it will populate the favorites dropdown with the name not the id
+      // Need to
+        const response = await axios.post('/api/favorites', favorite)
+        console.log(response.data)
+
+    } catch (err) {
+        console.log('Error: ', err)
+    }
   }
 
   // Reverts login button back to visible and deletes all session storage valeus related to login
@@ -68,6 +89,9 @@ function NavBar() {
     sessionStorage.removeItem('initial')
   }
 
+  // State to manage if favorites list is visible
+  const [showFavorites, setShowFavorites] = useState(false);
+
   return (
       <div className={styles.navbar}>
 
@@ -75,9 +99,19 @@ function NavBar() {
               
               {isVisible && <button className={styles.button} onClick={useLogin}> Login </button>}
 
-              {!isVisible && (<div className={styles.profileContainer} onClick={toggleDropdown} ref={dropdownRef}> <Profile initial={sessionStorage.getItem("initial")} /> {dropdown && (<div className={styles.dropdownMenu}>
-                <button onClick={handleSignout}>Sign Out</button>
-              </div>)} </div>)}
+              {!isVisible && (<div className={styles.profileContainer} onClick={toggleDropdown} ref={dropdownRef}> <Profile initial={sessionStorage.getItem("initial")} /> 
+              {dropdown && (
+                <div className={styles.dropdownMenu}>
+                  <button onClick={handleSignout}>Sign Out</button>
+                  <button className={styles.favoritesButton}>Favorites</button> {/* Favorites button */}
+                      {showFavorites && ( /* Render favorites list if showFavorites is true */
+                        <div className={styles.favoritesList}>
+                          {favoriteItems.map((item, index) => (
+                            <button key={index}>{item}</button>
+                          ))}
+                        </div>
+                      )}
+                </div>)} </div>)}
           </div>
 
           <div className={styles.logoContainer}>
@@ -85,7 +119,7 @@ function NavBar() {
               <img className={styles.logo} src={goodplaces} alt="logo image"/>
               </Link>
             <Link to="/" style={{ textDecoration: "none"}}>
-              <p className={styles.logoText}> <b>Goodplaces</b></p>
+              <p className={styles.logoText}> <b>GoodPlaces</b></p>
               </Link>
 
           </div>

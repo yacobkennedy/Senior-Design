@@ -26,7 +26,14 @@
 
 .address{
     position: absolute;
-    right: 12%; /* Position .address to the right side */
+    right: 15.5%; /* Position .address to the right side */
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.addressMoved{
+    position: absolute;
+    right: 11.5%; /* Position .address to the right side */
     font-weight: bold;
     font-size: 16px;
 }
@@ -37,12 +44,36 @@
     left: 10%;
     display: flex;
     align-items: center;
-    top: 20%; /* Adjust the top position to position it underneath headerWrapper */
+    top: 21%; /* Adjust the top position to position it underneath headerWrapper */
 }
 
 .description{
     width: 40%;
 }
+
+.favoriteButton {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: 11.5%;
+    border-radius: 50%; /* Makes the button circular */
+    background-color: black;
+    border-style: solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.heartIcon {
+    color: white; /* Default color for the heart */
+}
+
+.favoriteButton.clicked .heartIcon {
+    color: red; /* Color of heart when clicked */
+}
+
 
 .imageContainer{
     position: absolute;

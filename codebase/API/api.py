@@ -15,6 +15,128 @@ def get_incomes():
     return jsonify(incomes)
 
 
+@app.route('/api/favorites', methods=['POST'])
+def get_favorites():
+    response = []
+    data = request.get_json()
+    print(data)
+    TOKEN = data['TOKEN']
+
+    # establishing the connection
+    conn = mysql.connector.connect(
+        user='root', password='1234', host='127.0.0.1', database="userinfo")
+
+    # Creating a cursor object using the cursor() method
+    cursor = conn.cursor()
+
+    # Preparing SQL query to INSERT a record into the database.
+    sql = f"""SELECT FAVORITE FROM favorites WHERE TOKEN = '{TOKEN}'"""
+
+    try:
+        # Executing the SQL command
+        cursor.execute(sql)
+        sqlresponse = cursor.fetchall()
+        print(sqlresponse)
+        for tuples in sqlresponse:
+            response.append(tuples[0])
+
+    except:
+        print("FAILURE")
+
+    return jsonify(response)
+
+@app.route('/api/addfavorite', methods=['POST'])
+def add_favorite():
+    data = request.get_json()
+    print(data)
+    TOKEN = data['TOKEN']
+    LOCATION = data['LOCATION']
+
+    # establishing the connection
+    conn = mysql.connector.connect(
+        user='root', password='1234', host='127.0.0.1', database="userinfo")
+
+    # Creating a cursor object using the cursor() method
+    cursor = conn.cursor()
+
+    # Preparing SQL query to INSERT a record into the database.
+    sql = f"SELECT TOKEN, FAVORITE FROM favorites"
+
+    try:
+        # Executing the SQL command
+        cursor.execute(sql)
+        sqlresponse = cursor.fetchall()
+        print(sqlresponse)
+        for tuples in sqlresponse:
+            if (TOKEN, LOCATION) == tuples:
+                return '', 204
+
+    except:
+        print("FAILURE")
+
+    sql = f"""INSERT INTO favorites(
+                           TOKEN, FAVORITE)
+                           VALUES ('{TOKEN}', '{LOCATION}')"""
+
+    try:
+        # Executing the SQL command
+        cursor.execute(sql)
+
+        # Commit your changes in the database
+        conn.commit()
+        RESPONSE_MSG = "SUCCESS"
+        print("SUCCESS")
+
+    except mysql.connector.Error as e:
+        # Print the error message for debugging
+        print("Error:", e)
+        # Rolling back in case of error
+        conn.rollback()
+
+    # Closing the connection
+    conn.close()
+
+    return '', 204
+
+
+@app.route('/api/removefavorite', methods=['POST'])
+def remove_favorite():
+    data = request.get_json()
+    print(data)
+    TOKEN = data['TOKEN']
+    LOCATION = data['LOCATION']
+
+    # establishing the connection
+    conn = mysql.connector.connect(
+        user='root', password='1234', host='127.0.0.1', database="userinfo")
+    print("CONNECTION")
+
+    # Creating a cursor object using the cursor() method
+    cursor = conn.cursor()
+
+    sql = f"""DELETE FROM favorites WHERE TOKEN = '{TOKEN}' AND FAVORITE = '{LOCATION}'"""
+
+    try:
+        # Executing the SQL command
+        cursor.execute(sql)
+
+        # Commit your changes in the database
+        conn.commit()
+        RESPONSE_MSG = "SUCCESS"
+        print("SUCCESS")
+
+    except mysql.connector.Error as e:
+        # Print the error message for debugging
+        print("Error:", e)
+        # Rolling back in case of error
+        conn.rollback()
+
+    # Closing the connection
+    conn.close()
+
+    return '', 204
+
+
 @app.route('/api/images', methods=['POST'])
 def image_search():
     data = request.get_json()
