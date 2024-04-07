@@ -16,6 +16,19 @@ function Signup() {
 
     // State for lastname input
     const [lastname, setLastname] = useState('')
+
+    // State for error message if username is already taken
+    const [error, setError] = useState('')
+
+    // Var for storing login response dict so we can parse through it
+    var responsedict;
+
+    const navigate = useNavigate();
+
+    // Handle the event to navigate back to home page after successful login
+    const goHome = () => {
+        navigate("/");
+    }
     
 
     // Functions for events and button clicks through the signup process
@@ -55,17 +68,69 @@ function Signup() {
 
         try{
             const response = await axios.post('/api/signup', userinfo)
+
+            responsedict = response.data
+            console.log(responsedict)
+
         } catch (err) {
             console.log('Error: ', err)
         }
 
-        // Reset state after submit
+        let responseMsg = responsedict['RESPONSE']
+        console.log("msg", responseMsg)
+
+        if(responseMsg === "FAILURE") {
+            setError("Username is already in use, please try again")
+        }
+        else{
+            handleLogin()
+        }
+
+
+    }
+
+    // Function to run login logic if sign up is successful so user is automatically logged in
+    async function handleLogin() {
+        // Reset state after submit if username is allowed
         setUsername('')
         setPassword('')
         setFirstname('')
         setLastname('')
+        setError('')
 
+        // If successful account creation happens then the user should be logged in after sign up
+        // Set object to send to API
+        var userinfo = {
+            USERNAME: username,
+            PASSWORD: password
+        }
 
+        // DELETE LATER
+        console.log(username)
+        console.log(password)
+
+        try{
+            const response = await axios.post('/api/login', userinfo)
+
+            responsedict = response.data
+
+        } catch (err) {
+            console.log('Error: ', err)
+        }
+
+        let response = responsedict['RESPONSE']
+        let token = responsedict['TOKEN']
+        let firstname = responsedict['FIRSTNAME']
+
+        // Set session storage so user will be logged in for entirety of session
+        sessionStorage.setItem("TOKEN", token)
+        // Set session storage so that the login button will be removed and replaced with the user profile bubble
+        sessionStorage.setItem("loginvisible", JSON.stringify(false))
+        // Set session storage for the first initial that will be used to set the profile picture
+        sessionStorage.setItem("initial", Array.from(firstname)[0].toUpperCase())
+
+        //Navigate home after login
+        goHome()
     }
 
     return(
@@ -124,6 +189,8 @@ function Signup() {
                             placeholder="Password"
                         />
                     </div>
+
+                    <p className={styles.errorMessage}>{error}</p>
 
                     <div className={styles.buttonContainer}>
                         <button className={styles.button} onClick={handleSignup}> Submit </button>

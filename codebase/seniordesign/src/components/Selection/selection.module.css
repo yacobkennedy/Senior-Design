@@ -1,3 +1,33 @@
+.selectionContainer{
+    position: relative;
+    width: 100%;
+}
+
 .selection{
     width: 100%;
+    border-radius: 25px;
+    background-color: "#E5EAF5";
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: none;
+    padding-left: 10px;
+    font-size: 16px;
+}
+
+.dropdownIndicator{
+    padding-right: 5px;
+}
+
+.searchButton{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: tan;
+    border-radius: 20px;
+    width: 100px;
+    color: black;
+    border-style: solid;
+    right: 5px;
 }

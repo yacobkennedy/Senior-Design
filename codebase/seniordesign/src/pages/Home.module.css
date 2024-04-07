@@ -12,7 +12,7 @@
     width: 200px
 }
 
-.homeInfo{
+.homeContainer{
     flex: 90%;
     display: flex;
     flex-direction: column;
@@ -25,6 +25,6 @@
     font-size: 32px;
 }
 
-.selectionContainer{
+.selectionWrapper{
     width: 60%;
 }

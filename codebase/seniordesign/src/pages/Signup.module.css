@@ -94,6 +94,10 @@
     background-color: #E5EAF5;
 }
 
+.errorMessage{
+    font-size: 75%;
+}
+
 .buttonContainer{
     justify-content: center;
     padding: 30px

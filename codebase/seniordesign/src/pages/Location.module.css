@@ -1,0 +1,51 @@
+.locationPage{
+    background-color: #494D5F;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Take full height of the viewport */
+}
+
+.locationContainer{
+    flex: 90%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+.headerWrapper{
+    position: absolute;
+    width: 90%;
+    left: 10%;
+    display: flex;
+    justify-content: space-between; /* Add space between items */
+    align-items: center;
+    top: 10%; /* Adjust the top position as needed */
+}
+
+.address{
+    position: absolute;
+    right: 12%; /* Position .address to the right side */
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.descriptionWrapper{
+    position: absolute;
+    width: 90%;
+    left: 10%;
+    display: flex;
+    align-items: center;
+    top: 20%; /* Adjust the top position to position it underneath headerWrapper */
+}
+
+.description{
+    width: 40%;
+}
+
+.imageContainer{
+    position: absolute;
+    bottom: 5%; /* Adjust the distance from the bottom as needed */
+    left: 10%;
+}

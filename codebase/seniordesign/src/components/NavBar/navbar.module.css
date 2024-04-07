@@ -40,3 +40,31 @@
 .logoText{
     font-size: 30px;
 }
+
+.profileContainer {
+    position: relative;
+  }
+  
+  .dropdownMenu {
+    position: absolute;
+    top: calc(100% + 4px); /* Position the dropdown menu below the profile bubble */
+    right: 50%; /* Position the dropdown menu horizontally centered relative to the profile bubble */
+    transform: translateX(50%); /* Adjust the horizontal positioning to center the menu */
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 8px;
+  }
+  
+  .dropdownMenu button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+  
+  .dropdownMenu button:hover {
+    background-color: #f0f0f0;
+  }
