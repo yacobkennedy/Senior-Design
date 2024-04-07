@@ -3,6 +3,7 @@ import styles from './Login.module.css'
 import axios from 'axios';
 import { Outlet, Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
+import Profile from '../components/Profile/profile';
 
 
 function Login() {
@@ -66,6 +67,7 @@ function Login() {
 
         let response = responsedict['RESPONSE']
         let token = responsedict['TOKEN']
+        let firstname = responsedict['FIRSTNAME']
 
         if(response === "INCORRECT PASSWORD" || response === "UNKNOWN USER") {
             setError("Incorrect Credentials, please try again")
@@ -75,11 +77,17 @@ function Login() {
             // This case pertains to user actually logging in so should push back to home page with user successfully logged in. It should remove the login button from visibility as well
             setUsername('')
             setPassword('')
+            setError('')
 
             // Set session storage so user will be logged in for entirety of session
             sessionStorage.setItem("TOKEN", token)
             // Set session storage so that the login button will be removed and replaced with the user profile bubble
             sessionStorage.setItem("loginvisible", JSON.stringify(false))
+            // Set session storage for the first initial that will be used to set the profile picture
+            sessionStorage.setItem("initial", Array.from(firstname)[0].toUpperCase())
+
+            //Navigate home after login
+            goHome()
         }
 
     }

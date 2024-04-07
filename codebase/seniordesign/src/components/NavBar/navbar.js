@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from './navbar.module.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import { Outlet, Link } from "react-router-dom";
 import goodplaces from '../../images/goodplaces.png';
+import Profile from '../Profile/profile';
 
 function NavBar() {
   // Code to initially set visible sessionstorage value but not reset it every time component is rerendered
@@ -18,11 +19,32 @@ function NavBar() {
     } else {
       console.log('Value already exists in sessionStorage');
     }
+
+    const closeDropdown = (event) => {
+      // Check if the click occurred outside of the dropdown menu
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdown(false);
+      }
+    };
+
+    // Attach the event listener when the component mounts
+    document.addEventListener('mousedown', closeDropdown);
+
+    // Remove the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('mousedown', closeDropdown);
+    };
+
   }, []);
 
   // State to manage if Login button should be visible or replaced with the profile link
   const [isVisible, setIsVisible] = useState(JSON.parse(sessionStorage.getItem('loginvisible')))
   console.log('visibility', isVisible)
+
+  // State to manage if profile dropdown menu is visible or not
+  const [dropdown, setDropdown] = useState(false);
+
+  const dropdownRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -31,11 +53,20 @@ function NavBar() {
     navigate("/login");
   }
 
-  // Function for handling profile options after login
-  const profileDropdown = () => {
-
+  // Set dropdown to opposite boolean value when the profile is clicked on again
+  const toggleDropdown = () => {
+    setDropdown(!dropdown)
   }
 
+  // Reverts login button back to visible and deletes all session storage valeus related to login
+  function handleSignout() {
+    sessionStorage.setItem('loginvisible', JSON.stringify(true));
+    console.log('Value set in sessionStorage');
+    setIsVisible(true)
+
+    sessionStorage.removeItem('TOKEN')
+    sessionStorage.removeItem('initial')
+  }
 
   return (
       <div className={styles.navbar}>
@@ -44,7 +75,9 @@ function NavBar() {
               
               {isVisible && <button className={styles.button} onClick={useLogin}> Login </button>}
 
-              {!isVisible && <select> Profile </select>}
+              {!isVisible && (<div className={styles.profileContainer} onClick={toggleDropdown} ref={dropdownRef}> <Profile initial={sessionStorage.getItem("initial")} /> {dropdown && (<div className={styles.dropdownMenu}>
+                <button onClick={handleSignout}>Sign Out</button>
+              </div>)} </div>)}
           </div>
 
           <div className={styles.logoContainer}>

@@ -4,7 +4,7 @@ import styles from './selection.module.css'
 import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
 
-function Selection({height, buttonHeight}) {
+function Selection({ height, buttonHeight }) {
   // State for tracking input value being typed into the search bar
   const [inputValue, setInputValue] = useState('');
 
