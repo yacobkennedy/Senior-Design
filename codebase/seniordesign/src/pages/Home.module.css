@@ -1,3 +1,8 @@
+.loading {
+    filter: blur(3px); /* Apply blur effect */
+    pointer-events: none; /* Prevent user interaction */
+  }
+
 .homePage{
     background-color: #494D5F;
     width: 100%;

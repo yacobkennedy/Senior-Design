@@ -8,6 +8,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios';
 
 function Search() {
+    // State to manage if page is loading
+    const [loading, setLoading] = useState(false);
+
+    const [topResult, setTopResult] = useState(null); // Use state to store topResult
+    
     // Navigation for between pages
     const navigate = useNavigate();
 
@@ -15,11 +20,16 @@ function Search() {
     const location = useLocation()
     const data = location.state
     
-    // First result in the list to show as top result
-    const topResult = data.shift()
+    useEffect(() => {
+        // Checks if data exists and isnt 0
+        if (data && data.length > 0) {
+            // Set the first item in the data array as the top result
+            setTopResult(data[0]);
+        }
+    }, [data]); // Trigger effect when data changes
 
     const handleDivClick = async (locationId) => {
-        console.log("Clicked on div with location ID:", locationId);
+        setLoading(true)
         // ADD API CALL WITH LOCATION ID HERE
         var location = {
           ID: locationId
@@ -32,62 +42,66 @@ function Search() {
           navigate("/location", { state: data });
         } catch (err) {
           console.log('Error: ', err)
+        } finally {
+            setLoading(false)
         }
       };
 
       return(
-        <div className={styles.searchPage}>
-            <NavBar/>
+        <div className={`${loading ? styles.loading : ''}`}>
+            <div className={styles.searchPage}>
+                <NavBar/>
 
-            <div className={styles.searchContainer}>
+                <div className={styles.searchContainer}>
 
-                <div className={styles.selectionWrapper}>
-                    <Selection height={45} buttonHeight={35}/>
-                </div>
-
-                <div className={styles.topResultContainer}>
-
-                    <div className={styles.topResultHeader}>
-
-                        <h3 style={{marginTop: '0', marginBottom: '0', padding: '10px'}}> Top Result </h3>
-
+                    <div className={styles.selectionWrapper}>
+                        <Selection height={45} buttonHeight={35} setLoading={setLoading}/>
                     </div>
 
-                    <div className={styles.topResultCard} onClick={() => handleDivClick(topResult.location_id)}>
+                    <div className={styles.topResultContainer}>
 
-                        <img className={styles.image} src={topResult.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
+                        <div className={styles.topResultHeader}>
 
-                        <div>
-
-                            <h3 className={styles.resultsName}>{topResult.name}</h3>
-                            <p className={styles.resultsAddress}>{topResult.address_obj.address_string}</p>
+                            <h3 style={{marginTop: '0', marginBottom: '0', padding: '10px'}}> Top Result </h3>
 
                         </div>
 
-                    </div>
-                </div>
+                        <div className={styles.topResultCard} onClick={() => handleDivClick(topResult?.location_id)}>
 
-                <div className={styles.resultsContainer}>
-                    <div className={styles.topResultHeader}>
-
-                    <h3 style={{marginTop: '0', marginBottom: '0', padding: '10px'}}> Other Results </h3>
-
-                    </div>
-
-                    {data.map((item) => (
-                        <div key={item.location_id} className={styles.resultsCard} onClick={() => handleDivClick(item.location_id)}>
-                            <img className={styles.image} src={item.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
+                            <img className={styles.image} src={topResult?.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
 
                             <div>
-                                <h3 className={styles.resultsName}>{item.name}</h3>
-                                <p className={styles.resultsAddress}>{item.address_obj.address_string}</p>
+
+                                <h3 className={styles.resultsName}>{topResult?.name}</h3>
+                                <p className={styles.resultsAddress}>{topResult?.address_obj?.address_string}</p>
+
                             </div>
+
                         </div>
-                    ))}
+                    </div>
+
+                    <div className={styles.resultsContainer}>
+                        <div className={styles.topResultHeader}>
+
+                        <h3 style={{marginTop: '0', marginBottom: '0', padding: '10px'}}> Other Results </h3>
+
+                        </div>
+
+                        {data.slice(1).map((item) => (
+                            <div key={item.location_id} className={styles.resultsCard} onClick={() => handleDivClick(item.location_id)}>
+                                <img className={styles.image} src={item.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
+
+                                <div>
+                                    <h3 className={styles.resultsName}>{item.name}</h3>
+                                    <p className={styles.resultsAddress}>{item.address_obj.address_string}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
                 </div>
 
             </div>
-
         </div>
 
       )

@@ -26,7 +26,8 @@ function Location(){
           // Set object to send to API
           var favorite = {
             TOKEN: sessionStorage.getItem('TOKEN'),
-            LOCATION: data['location_id']
+            LOCATION: data['location_id'],
+            NAME: data['name']
         }
 
         try{
@@ -41,7 +42,8 @@ function Location(){
           // Set object to send to API
           var favorite = {
             TOKEN: sessionStorage.getItem('TOKEN'),
-            LOCATION: data['location_id']
+            LOCATION: data['location_id'],
+            NAME: data['name']
         }
 
         try{

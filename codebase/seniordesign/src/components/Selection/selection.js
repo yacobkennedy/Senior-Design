@@ -4,7 +4,7 @@ import styles from './selection.module.css'
 import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
 
-function Selection({ height, buttonHeight }) {
+function Selection({ height, buttonHeight, setLoading }) {
     // State for tracking input value being typed into the search bar
     const [inputValue, setInputValue] = useState('');
 
@@ -37,8 +37,8 @@ function Selection({ height, buttonHeight }) {
 
     const handleSearch = async() => {
       var data;
-      // Perform search action here
-      console.log('Search button clicked!');
+      // Set loading value to true once the search button is clicked
+      setLoading(true)
       // Once search is hit, set the state to that value
       setSelectedOption(inputValue)
       // May update to selectedOption or just change to use local storage instead.
@@ -48,6 +48,8 @@ function Selection({ height, buttonHeight }) {
         navigate("/search", { state: data });
       } catch (error) {
         console.error('Error:', error);
+      } finally {
+        setLoading(false)
       }
     };
   

@@ -41,16 +41,19 @@ function NavBar() {
 
   // State to manage if Login button should be visible or replaced with the profile link
   const [isVisible, setIsVisible] = useState(JSON.parse(sessionStorage.getItem('loginvisible')))
-  console.log('visibility', isVisible)
 
   // State to manage if profile dropdown menu is visible or not
   const [dropdown, setDropdown] = useState(false);
 
+  // State to manage if favorites list is visible
+  const [showFavorites, setShowFavorites] = useState(false);
+
+  // State to track the favoriteItems list to populate the favorites dropdown menu
+  const [favoriteItems, setFavoriteItems] = useState([])
+
   const dropdownRef = useRef(null);
 
   const navigate = useNavigate();
-
-  var favoriteItems = ["hello"];
 
   // Handle the button click to navigate to the Login page
   const useLogin = () => {
@@ -68,11 +71,11 @@ function NavBar() {
       TOKEN: sessionStorage.getItem('TOKEN')
     }
 
+    // Get favorited pages to populate the dropdown list
     try{
-      // Need to add the location name in the favorites table so it will populate the favorites dropdown with the name not the id
-      // Need to
         const response = await axios.post('/api/favorites', favorite)
         console.log(response.data)
+        setFavoriteItems(response.data)
 
     } catch (err) {
         console.log('Error: ', err)
@@ -89,8 +92,21 @@ function NavBar() {
     sessionStorage.removeItem('initial')
   }
 
-  // State to manage if favorites list is visible
-  const [showFavorites, setShowFavorites] = useState(false);
+  // Function for getting the key of the button in favorite list which is location id so we can go back to that page
+  const handleClick = async (key) => {
+    var location = {
+      ID: key
+    }
+
+    try {
+      const response = await axios.post('/api/location', location)
+      const data = response.data
+
+      navigate("/location", { state: data });
+    } catch (err) {
+      console.log('Error: ', err)
+    }
+  };
 
   return (
       <div className={styles.navbar}>
@@ -106,9 +122,14 @@ function NavBar() {
                   <button className={styles.favoritesButton}>Favorites</button> {/* Favorites button */}
                       {showFavorites && ( /* Render favorites list if showFavorites is true */
                         <div className={styles.favoritesList}>
-                          {favoriteItems.map((item, index) => (
-                            <button key={index}>{item}</button>
-                          ))}
+                          {favoriteItems.map(obj => {
+                            const [key, value] = Object.entries(obj)[0]; // Extracting the key-value pair
+                            return (
+                              <button key={key} onClick={() => handleClick(key)}>
+                                {value}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
                 </div>)} </div>)}

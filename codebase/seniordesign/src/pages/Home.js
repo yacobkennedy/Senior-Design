@@ -8,19 +8,23 @@ import Selection from '../components/Selection/selection';
 
 
 function Home() {
+    // State to manage if page is loading
+    const [loading, setLoading] = useState(false);
 
     return(
-        <div className={styles.homePage}>
-            <NavBar/>
-            <div className={styles.homeContainer}>
+        <div className={`${loading ? styles.loading : ''}`}>
+            <div className={styles.homePage}>
+                <NavBar/>
+                <div className={styles.homeContainer}>
 
-                <div className={styles.header}>
-                    
-                    <p> <b>Discover. Explore. Adventure.</b> </p>
-                </div>
+                    <div className={styles.header}>
+                        
+                        <p> <b>Discover. Explore. Adventure.</b> </p>
+                    </div>
 
-                <div className={styles.selectionWrapper}>
-                    <Selection height={55} buttonHeight={45}/>
+                    <div className={styles.selectionWrapper}>
+                        <Selection height={55} buttonHeight={45} setLoading={setLoading}/>
+                    </div>
                 </div>
             </div>
         </div>

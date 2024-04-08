@@ -18,6 +18,7 @@ def get_incomes():
 @app.route('/api/favorites', methods=['POST'])
 def get_favorites():
     response = []
+    tempdict = {}
     data = request.get_json()
     print(data)
     TOKEN = data['TOKEN']
@@ -30,7 +31,7 @@ def get_favorites():
     cursor = conn.cursor()
 
     # Preparing SQL query to INSERT a record into the database.
-    sql = f"""SELECT FAVORITE FROM favorites WHERE TOKEN = '{TOKEN}'"""
+    sql = f"""SELECT LOCATION, NAME FROM favorites WHERE TOKEN = '{TOKEN}'"""
 
     try:
         # Executing the SQL command
@@ -38,10 +39,12 @@ def get_favorites():
         sqlresponse = cursor.fetchall()
         print(sqlresponse)
         for tuples in sqlresponse:
-            response.append(tuples[0])
+            tempdict[tuples[0]] = tuples[1]
+            response.append(tempdict)
 
-    except:
-        print("FAILURE")
+    except mysql.connector.Error as e:
+        # Print the error message for debugging
+        print("Error:", e)
 
     return jsonify(response)
 
@@ -51,6 +54,7 @@ def add_favorite():
     print(data)
     TOKEN = data['TOKEN']
     LOCATION = data['LOCATION']
+    NAME = data['NAME']
 
     # establishing the connection
     conn = mysql.connector.connect(
@@ -60,7 +64,7 @@ def add_favorite():
     cursor = conn.cursor()
 
     # Preparing SQL query to INSERT a record into the database.
-    sql = f"SELECT TOKEN, FAVORITE FROM favorites"
+    sql = f"SELECT TOKEN, LOCATION, NAME FROM favorites"
 
     try:
         # Executing the SQL command
@@ -68,15 +72,15 @@ def add_favorite():
         sqlresponse = cursor.fetchall()
         print(sqlresponse)
         for tuples in sqlresponse:
-            if (TOKEN, LOCATION) == tuples:
+            if (TOKEN, LOCATION, NAME) == tuples:
                 return '', 204
 
     except:
         print("FAILURE")
 
     sql = f"""INSERT INTO favorites(
-                           TOKEN, FAVORITE)
-                           VALUES ('{TOKEN}', '{LOCATION}')"""
+                           TOKEN, LOCATION, NAME)
+                           VALUES ('{TOKEN}', '{LOCATION}', '{NAME}')"""
 
     try:
         # Executing the SQL command
@@ -105,6 +109,7 @@ def remove_favorite():
     print(data)
     TOKEN = data['TOKEN']
     LOCATION = data['LOCATION']
+    NAME = data['NAME']
 
     # establishing the connection
     conn = mysql.connector.connect(
@@ -114,7 +119,7 @@ def remove_favorite():
     # Creating a cursor object using the cursor() method
     cursor = conn.cursor()
 
-    sql = f"""DELETE FROM favorites WHERE TOKEN = '{TOKEN}' AND FAVORITE = '{LOCATION}'"""
+    sql = f"""DELETE FROM favorites WHERE TOKEN = '{TOKEN}' AND LOCATION = '{LOCATION}'"""
 
     try:
         # Executing the SQL command
