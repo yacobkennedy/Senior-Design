@@ -32,6 +32,14 @@ function Login() {
         setPassword(event.target.value)
     }
 
+    // Function to use enter to trigger button
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          handleLogin()
+        }
+      };
+
     const navigate = useNavigate();
 
     // Handle the event to navigate back to home page after successful login
@@ -41,6 +49,10 @@ function Login() {
 
     // Function for handling login and checking credentials on the backend as well as pulling the token
     async function handleLogin() {
+        if (username === '' || password === '') {
+            setError('Please fill out all fields')
+            return
+        }
         // Set object to send to API
         var userinfo = {
             USERNAME: username,
@@ -113,6 +125,7 @@ function Login() {
                                 value={username}
                                 onChange={handleUsernameChange}
                                 placeholder="Email"
+                                onKeyDown={handleKeyPress}
                             />
                         </div>
 
@@ -125,6 +138,7 @@ function Login() {
                                 value={password}
                                 onChange={handlePasswordChange}
                                 placeholder="Password"
+                                onKeyDown={handleKeyPress}
                             />
                         </div>
 

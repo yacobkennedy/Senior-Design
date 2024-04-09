@@ -50,10 +50,21 @@ function Signup() {
     const handleLastnameChange = (event) => {
         setLastname(event.target.value)
     }
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          handleSignup()
+        }
+      };
     
 
     // Function for signing up user and sending the API call
     async function handleSignup() {
+        if (username === '' || password === '' || firstname === '' || lastname === '') {
+            setError('Please fill out all fields')
+            return
+        }
         // Set object to send to API
         var userinfo = {
             USERNAME: username,
@@ -155,6 +166,7 @@ function Signup() {
                                     value={firstname}
                                     onChange={handleFirstnameChange}
                                     placeholder="First Name"
+                                    onKeyDown={handleKeyPress}
                                 />
                             </div>
 
@@ -167,6 +179,7 @@ function Signup() {
                                     value={lastname}
                                     onChange={handleLastnameChange}
                                     placeholder="Last Name"
+                                    onKeyDown={handleKeyPress}
                                 />
                             </div>
                         </div>
@@ -180,6 +193,7 @@ function Signup() {
                                 value={username}
                                 onChange={handleUsernameChange}
                                 placeholder="Email"
+                                onKeyDown={handleKeyPress}
                             />
                         </div>
 
@@ -192,6 +206,7 @@ function Signup() {
                                 value={password}
                                 onChange={handlePasswordChange}
                                 placeholder="Password"
+                                onKeyDown={handleKeyPress}
                             />
                         </div>
 
