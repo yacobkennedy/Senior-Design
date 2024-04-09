@@ -19,6 +19,9 @@ function Login() {
     // State for error message if username or password is incorrect
     const [error, setError] = useState('')
 
+    // State to track email validity
+    const [isValidEmail, setIsValidEmail] = useState(true);
+
     // Var for storing login response dict so we can parse through it
     var responsedict;
     
@@ -53,6 +56,14 @@ function Login() {
             setError('Please fill out all fields')
             return
         }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var status = emailPattern.test(username)
+        if(status === false) {
+            setError('Please enter a valid email')
+            return
+        }
+        
         // Set object to send to API
         var userinfo = {
             USERNAME: username,
