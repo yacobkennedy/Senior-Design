@@ -6,6 +6,8 @@ import goodplaces from '../images/goodplaces.png';
 import placeholder from '../images/placeholder.png'
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios';
+import "@fontsource/maven-pro";
+import "@fontsource/maven-pro/700.css";
 
 function Search() {
     // State to manage if page is loading
@@ -61,20 +63,18 @@ function Search() {
                     <div className={styles.topResultContainer}>
 
                         <div className={styles.topResultHeader}>
-
                             <h3 style={{marginTop: '0', marginBottom: '0', padding: '10px'}}> Top Result </h3>
-
                         </div>
 
                         <div className={styles.topResultCard} onClick={() => handleDivClick(topResult?.location_id)}>
 
-                            <img className={styles.image} src={topResult?.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
+                            <div className={styles.imageWrapper}>
+                                <img className={styles.image} src={topResult?.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
+                            </div>
 
-                            <div>
-
+                            <div className={styles.textContainer}>
                                 <h3 className={styles.resultsName}>{topResult?.name}</h3>
                                 <p className={styles.resultsAddress}>{topResult?.address_obj?.address_string}</p>
-
                             </div>
 
                         </div>
@@ -88,12 +88,16 @@ function Search() {
                         </div>
 
                         {data.slice(1).map((item) => (
-                            <div key={item.location_id} className={styles.resultsCard} onClick={() => handleDivClick(item.location_id)}>
-                                <img className={styles.image} src={item.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
+                            <div className={styles.resultsWrapper}>
+                                <div key={item.location_id} className={styles.resultsCard} onClick={() => handleDivClick(item.location_id)}>
+                                    <div className={styles.imageWrapper}>
+                                        <img className={styles.image} src={item.image} onError={(e) => {e.target.src = placeholder}} alt="location image"/>
+                                    </div>
 
-                                <div>
-                                    <h3 className={styles.resultsName}>{item.name}</h3>
-                                    <p className={styles.resultsAddress}>{item.address_obj.address_string}</p>
+                                    <div className={styles.textContainer}>
+                                        <h3 className={styles.resultsName}>{item.name}</h3>
+                                        <p className={styles.resultsAddress}>{item.address_obj.address_string}</p>
+                                    </div>
                                 </div>
                             </div>
                         ))}

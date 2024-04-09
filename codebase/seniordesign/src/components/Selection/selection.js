@@ -3,6 +3,9 @@ import Select from 'react-select';
 import styles from './selection.module.css'
 import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import "@fontsource/maven-pro";
 
 function Selection({ height, buttonHeight, setLoading }) {
     // State for tracking input value being typed into the search bar
@@ -25,7 +28,7 @@ function Selection({ height, buttonHeight, setLoading }) {
     const handleKeyPress = (event) => {
       if (event.key === 'Enter') {
         event.preventDefault();
-        buttonRef.current.click(); // Trigger button click
+        handleSearch()
       }
     };
 
@@ -126,28 +129,6 @@ function Selection({ height, buttonHeight, setLoading }) {
       return output
     }
 
-    // RESPONSE IS NOW FORMATTED CORRECTLY
-    // NEED TO NOW REDIRECT TO A DIFFERENT HTML PAGE THAT SIMPLY LISTS EACH OF THE STRINGS 
-    // WE NEED TO ALSO KEEP TRACK OF THE LOCATION IDs ASSOCIATED WITH EACH LISTING
-    // ALSO, THE LOCATION SEARCH ONLY RETURNS 10 RESULTS PER SEARCH INPUT
-    // FOR EXAMPLE, THE SAME STRING WITH THE SAME PARAMETERS RETURNS THE SAME LIST
-    // IM NOT SURE MUCH CAN BE DONE ABOUT THE 10 LIMIT SO WE HAVE TO WORK WITH THAT FOR NOW
-    // 
-    // The way we have it set up, the API isn't using any of the optional parameters
-    // I'm not fully sure how we'd be able to handle having parameters in the input,
-    // so we may need to have something like checkboxes and additional inputs for the added parameters
-    //
-    // A better option might be to instead just call the API multiple times with each of the different parameters
-    // for example, call it once with no category specified, then with 'hotels' specified then 'attractions' etc.
-    // then compile all of the results into a comprehensive list while removing duplicates. 
-    //
-    // This will allow us to simulate a larger number of results than the API initially allows, however it will largely 
-    // increase the number of API calls made.
-    //
-    // Additional option is to webscrape instead (JAKE OPTION) we'd need to figure out how to do that
-    // can maybe just webscrape images and details which will reduce API calls but still allow us to provide 
-    // some form of information
-
 
   return (
     <div className={styles.selectionContainer}>
@@ -158,9 +139,11 @@ function Selection({ height, buttonHeight, setLoading }) {
         type='search'
         onChange={handleInputChange}
         onKeyDown={handleKeyPress}
-        placeholder='Find a Destination...'
+        placeholder='Find somewhere fun'
       />
-      <button ref={buttonRef} className={styles.searchButton} style={{height: buttonHeight}} onClick={handleSearch}>Search</button>
+      <div className={styles.searchIcon} onClick={handleSearch}>
+        <FontAwesomeIcon icon={faSearch} size="lg" ref={buttonRef} />
+      </div>
     </div>
   );
 }

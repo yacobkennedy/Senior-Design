@@ -18,7 +18,6 @@ def get_incomes():
 @app.route('/api/favorites', methods=['POST'])
 def get_favorites():
     response = []
-    tempdict = {}
     data = request.get_json()
     print(data)
     TOKEN = data['TOKEN']
@@ -31,7 +30,7 @@ def get_favorites():
     cursor = conn.cursor()
 
     # Preparing SQL query to INSERT a record into the database.
-    sql = f"""SELECT LOCATION, NAME FROM favorites WHERE TOKEN = '{TOKEN}'"""
+    sql = f"""SELECT LOCATION, IMAGE, NAME, ADDRESS FROM favorites WHERE TOKEN = '{TOKEN}'"""
 
     try:
         # Executing the SQL command
@@ -39,8 +38,14 @@ def get_favorites():
         sqlresponse = cursor.fetchall()
         print(sqlresponse)
         for tuples in sqlresponse:
-            tempdict[tuples[0]] = tuples[1]
-            response.append(tempdict)
+            temparray=[]
+            temparray.append(tuples[0])
+            temparray.append(tuples[1])
+            temparray.append(tuples[2])
+            temparray.append(tuples[3])
+            response.append(temparray)
+
+        print(response)
 
     except mysql.connector.Error as e:
         # Print the error message for debugging
@@ -54,7 +59,9 @@ def add_favorite():
     print(data)
     TOKEN = data['TOKEN']
     LOCATION = data['LOCATION']
+    IMAGE = data['IMAGE']
     NAME = data['NAME']
+    ADDRESS = data['ADDRESS']
 
     # establishing the connection
     conn = mysql.connector.connect(
@@ -64,7 +71,7 @@ def add_favorite():
     cursor = conn.cursor()
 
     # Preparing SQL query to INSERT a record into the database.
-    sql = f"SELECT TOKEN, LOCATION, NAME FROM favorites"
+    sql = f"SELECT TOKEN, LOCATION, IMAGE, NAME, ADDRESS FROM favorites"
 
     try:
         # Executing the SQL command
@@ -72,15 +79,15 @@ def add_favorite():
         sqlresponse = cursor.fetchall()
         print(sqlresponse)
         for tuples in sqlresponse:
-            if (TOKEN, LOCATION, NAME) == tuples:
+            if (TOKEN, LOCATION, IMAGE, NAME, ADDRESS) == tuples:
                 return '', 204
 
     except:
         print("FAILURE")
 
     sql = f"""INSERT INTO favorites(
-                           TOKEN, LOCATION, NAME)
-                           VALUES ('{TOKEN}', '{LOCATION}', '{NAME}')"""
+                           TOKEN, LOCATION, IMAGE, NAME, ADDRESS)
+                           VALUES ('{TOKEN}', '{LOCATION}', '{IMAGE}', '{NAME}', '{ADDRESS}')"""
 
     try:
         # Executing the SQL command
@@ -109,7 +116,9 @@ def remove_favorite():
     print(data)
     TOKEN = data['TOKEN']
     LOCATION = data['LOCATION']
+    IMAGE = data['IMAGE']
     NAME = data['NAME']
+    ADDRESS = data['ADDRESS']
 
     # establishing the connection
     conn = mysql.connector.connect(
@@ -119,7 +128,7 @@ def remove_favorite():
     # Creating a cursor object using the cursor() method
     cursor = conn.cursor()
 
-    sql = f"""DELETE FROM favorites WHERE TOKEN = '{TOKEN}' AND LOCATION = '{LOCATION}'"""
+    sql = f"""DELETE FROM favorites WHERE TOKEN = '{TOKEN}' AND LOCATION = '{LOCATION}' AND IMAGE ='{IMAGE}' AND NAME = '{NAME}' AND ADDRESS = '{ADDRESS}'"""
 
     try:
         # Executing the SQL command
@@ -233,7 +242,7 @@ def do_search():
             imageresponse = requests.get(imageurl, headers=headers)
             imagedict = imageresponse.json()
             #print(imagedict)
-            image = imagedict['data'][0]['images']['small']['url']
+            image = imagedict['data'][0]['images']['large']['url']
             row['image'] = image
         except:
             row['image'] = '../images/placeholder.png'

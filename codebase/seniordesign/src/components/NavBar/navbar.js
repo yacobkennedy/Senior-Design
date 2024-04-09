@@ -3,10 +3,28 @@ import styles from './navbar.module.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import { Outlet, Link } from "react-router-dom";
 import goodplaces from '../../images/goodplaces.png';
+import logo from '../../images/logo.png'
 import Profile from '../Profile/profile';
 import axios from 'axios';
+import "@fontsource/maven-pro";
+import "@fontsource/maven-pro/700.css";
 
 function NavBar() {
+  // State to manage if Login button should be visible or replaced with the profile link
+  const [isVisible, setIsVisible] = useState(JSON.parse(sessionStorage.getItem('loginvisible')))
+
+  // State to manage if profile dropdown menu is visible or not
+  const [dropdown, setDropdown] = useState(false);
+
+  // State to manage if favorites list is visible
+  const [showFavorites, setShowFavorites] = useState(false);
+
+  const dropdownRef = useRef(null);
+
+  const navigate = useNavigate();
+
+  var data;
+
   // Code to initially set visible sessionstorage value but not reset it every time component is rerendered
   useEffect(() => {
     // Check if the value exists in sessionStorage
@@ -39,33 +57,13 @@ function NavBar() {
 
   }, []);
 
-  // State to manage if Login button should be visible or replaced with the profile link
-  const [isVisible, setIsVisible] = useState(JSON.parse(sessionStorage.getItem('loginvisible')))
-
-  // State to manage if profile dropdown menu is visible or not
-  const [dropdown, setDropdown] = useState(false);
-
-  // State to manage if favorites list is visible
-  const [showFavorites, setShowFavorites] = useState(false);
-
-  // State to track the favoriteItems list to populate the favorites dropdown menu
-  const [favoriteItems, setFavoriteItems] = useState([])
-
-  const dropdownRef = useRef(null);
-
-  const navigate = useNavigate();
-
   // Handle the button click to navigate to the Login page
   const useLogin = () => {
     navigate("/login");
   }
 
-  // Set dropdown to opposite boolean value when the profile is clicked on again
-  const toggleDropdown = async() => {
-    setDropdown(!dropdown)
-    // Delay showing favorites list to allow user to hover over it
-    setTimeout(() => setShowFavorites(!dropdown), 1000);
-
+  // Handle the favorites click to go to favorites page
+  const goFavorites = async() => {
     //Populate favorites list when profile is clicked
     var favorite = {
       TOKEN: sessionStorage.getItem('TOKEN')
@@ -75,11 +73,17 @@ function NavBar() {
     try{
         const response = await axios.post('/api/favorites', favorite)
         console.log(response.data)
-        setFavoriteItems(response.data)
+        data = response.data
 
     } catch (err) {
         console.log('Error: ', err)
     }
+    navigate("/favorites", {state: data})
+  }
+
+  // Set dropdown to opposite boolean value when the profile is clicked on again
+  const toggleDropdown = () => {
+    setDropdown(!dropdown)
   }
 
   // Reverts login button back to visible and deletes all session storage valeus related to login
@@ -119,28 +123,16 @@ function NavBar() {
               {dropdown && (
                 <div className={styles.dropdownMenu}>
                   <button onClick={handleSignout}>Sign Out</button>
-                  <button className={styles.favoritesButton}>Favorites</button> {/* Favorites button */}
-                      {showFavorites && ( /* Render favorites list if showFavorites is true */
-                        <div className={styles.favoritesList}>
-                          {favoriteItems.map(obj => {
-                            const [key, value] = Object.entries(obj)[0]; // Extracting the key-value pair
-                            return (
-                              <button key={key} onClick={() => handleClick(key)}>
-                                {value}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
+                  <button className={styles.favoritesButton} onClick={goFavorites}>Favorites</button>
                 </div>)} </div>)}
           </div>
 
           <div className={styles.logoContainer}>
             <Link to="/">
-              <img className={styles.logo} src={goodplaces} alt="logo image"/>
+              <img className={styles.logo} src={logo} alt="logo image"/>
               </Link>
             <Link to="/" style={{ textDecoration: "none"}}>
-              <p className={styles.logoText}> <b>GoodPlaces</b></p>
+              <p className={styles.logoText}> goodplaces</p>
               </Link>
 
           </div>

@@ -4,6 +4,9 @@ import axios from 'axios';
 import { Outlet, Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import Profile from '../components/Profile/profile';
+import NavBar from '../components/NavBar/navbar';
+import "@fontsource/maven-pro";
+import "@fontsource/maven-pro/700.css";
 
 
 function Login() {
@@ -94,48 +97,52 @@ function Login() {
 
     return(
         <div className={styles.loginPage}>
+            <NavBar />
             <div className={styles.loginContainer}>
+                <div className={styles.loginWrapper}>
 
-                <div className={styles.inputContainer}>
-                    <h2 className={styles.header}>Welcome Back</h2>
+                    <div className={styles.inputContainer}>
+                        <h2 className={styles.header}>Welcome Back</h2>
 
-                    <div className={styles.emailContainer}>
-                        <input
-                            className={styles.emailInput}
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={username}
-                            onChange={handleUsernameChange}
-                            placeholder="Email"
-                        />
+                        <div className={styles.emailContainer}>
+                            <input
+                                className={styles.emailInput}
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={username}
+                                onChange={handleUsernameChange}
+                                placeholder="Email"
+                            />
+                        </div>
+
+                        <div className={styles.passwordContainer}>
+                            <input
+                                className={styles.passwordInput}
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                placeholder="Password"
+                            />
+                        </div>
+
+                        <p className={styles.errorMessage}>{error}</p>
+
+                        <div className={styles.buttonContainer}>
+                            <button className={styles.button} onClick={handleLogin}> Sign In </button>
+                        </div>
+
                     </div>
 
-                    <div className={styles.passwordContainer}>
-                        <input
-                            className={styles.passwordInput}
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            placeholder="Password"
-                        />
+                    <div className={styles.signupContainer}>
+                        <p>
+                            Don't have an account? <br></br>
+                            <Link to="/signup">Join Now!</Link>
+                        </p>
                     </div>
 
-                    <p className={styles.errorMessage}>{error}</p>
-
-                    <div className={styles.buttonContainer}>
-                        <button className={styles.button} onClick={handleLogin}> Sign In </button>
-                    </div>
-
-                </div>
-
-                <div className={styles.signupContainer}>
-                    <p>
-                        Don't have an account? <br></br>
-                        <Link to="/signup">Join Now!</Link>
-                    </p>
                 </div>
 
             </div>
