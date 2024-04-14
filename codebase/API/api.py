@@ -277,7 +277,7 @@ def add_user():
 
 def add_userinfo(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN):
     # Boolean for tracking if username is allowed or not
-    ALLOWED_USER = False
+    ALLOWED_USER = True
 
     # establishing the connection
     conn = mysql.connector.connect(
@@ -294,8 +294,12 @@ def add_userinfo(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN):
         cursor.execute(sql)
         sqlresponse = cursor.fetchall()
 
-    except:
-        print("FAILURE")
+
+    except mysql.connector.Error as e:
+        # Print the error message for debugging
+        print("Error:", e)
+        # Rolling back in case of error
+        conn.rollback()
 
     # Iterates through usernames and if sign up username already exists, sign up will fail
     for tuples in sqlresponse:
@@ -357,6 +361,7 @@ def check_userinfo(USERNAME, PASSWORD):
     ## Set default values for token and response message
     TOKEN = ""
     RESPONSE_MSG = ""
+    FIRSTNAME = ""
 
     # establishing the connection
     conn = mysql.connector.connect(
