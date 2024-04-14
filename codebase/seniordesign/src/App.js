@@ -6,6 +6,7 @@ import Layout from './pages/Layout';
 import Signup from './pages/Signup';
 import Search  from './pages/Search';
 import Location from './pages/Location';
+import Favorites from './pages/Favorites';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="signup" element={<Signup />}/>
             <Route path="search" element={<Search />}/>
             <Route path="location" element={<Location />}/>
+            <Route path="favorites" element={<Favorites />}/>
           </Route>
         </Routes>
       </BrowserRouter>

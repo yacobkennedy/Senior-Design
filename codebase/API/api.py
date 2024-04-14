@@ -15,6 +15,142 @@ def get_incomes():
     return jsonify(incomes)
 
 
+@app.route('/api/favorites', methods=['POST'])
+def get_favorites():
+    response = []
+    data = request.get_json()
+    print(data)
+    TOKEN = data['TOKEN']
+
+    # establishing the connection
+    conn = mysql.connector.connect(
+        user='root', password='1234', host='127.0.0.1', database="userinfo")
+
+    # Creating a cursor object using the cursor() method
+    cursor = conn.cursor()
+
+    # Preparing SQL query to INSERT a record into the database.
+    sql = f"""SELECT LOCATION, IMAGE, NAME, ADDRESS FROM favorites WHERE TOKEN = '{TOKEN}'"""
+
+    try:
+        # Executing the SQL command
+        cursor.execute(sql)
+        sqlresponse = cursor.fetchall()
+        print(sqlresponse)
+        for tuples in sqlresponse:
+            temparray=[]
+            temparray.append(tuples[0])
+            temparray.append(tuples[1])
+            temparray.append(tuples[2])
+            temparray.append(tuples[3])
+            response.append(temparray)
+
+        print(response)
+
+    except mysql.connector.Error as e:
+        # Print the error message for debugging
+        print("Error:", e)
+
+    return jsonify(response)
+
+@app.route('/api/addfavorite', methods=['POST'])
+def add_favorite():
+    data = request.get_json()
+    print(data)
+    TOKEN = data['TOKEN']
+    LOCATION = data['LOCATION']
+    IMAGE = data['IMAGE']
+    NAME = data['NAME']
+    ADDRESS = data['ADDRESS']
+
+    # establishing the connection
+    conn = mysql.connector.connect(
+        user='root', password='1234', host='127.0.0.1', database="userinfo")
+
+    # Creating a cursor object using the cursor() method
+    cursor = conn.cursor()
+
+    # Preparing SQL query to INSERT a record into the database.
+    sql = f"SELECT TOKEN, LOCATION, IMAGE, NAME, ADDRESS FROM favorites"
+
+    try:
+        # Executing the SQL command
+        cursor.execute(sql)
+        sqlresponse = cursor.fetchall()
+        print(sqlresponse)
+        for tuples in sqlresponse:
+            if (TOKEN, LOCATION, IMAGE, NAME, ADDRESS) == tuples:
+                return '', 204
+
+    except:
+        print("FAILURE")
+
+    sql = f"""INSERT INTO favorites(
+                           TOKEN, LOCATION, IMAGE, NAME, ADDRESS)
+                           VALUES ('{TOKEN}', '{LOCATION}', '{IMAGE}', '{NAME}', '{ADDRESS}')"""
+
+    try:
+        # Executing the SQL command
+        cursor.execute(sql)
+
+        # Commit your changes in the database
+        conn.commit()
+        RESPONSE_MSG = "SUCCESS"
+        print("SUCCESS")
+
+    except mysql.connector.Error as e:
+        # Print the error message for debugging
+        print("Error:", e)
+        # Rolling back in case of error
+        conn.rollback()
+
+    # Closing the connection
+    conn.close()
+
+    return '', 204
+
+
+@app.route('/api/removefavorite', methods=['POST'])
+def remove_favorite():
+    data = request.get_json()
+    print(data)
+    TOKEN = data['TOKEN']
+    LOCATION = data['LOCATION']
+    IMAGE = data['IMAGE']
+    NAME = data['NAME']
+    ADDRESS = data['ADDRESS']
+
+    # establishing the connection
+    conn = mysql.connector.connect(
+        user='root', password='1234', host='127.0.0.1', database="userinfo")
+    print("CONNECTION")
+
+    # Creating a cursor object using the cursor() method
+    cursor = conn.cursor()
+
+    sql = f"""DELETE FROM favorites WHERE TOKEN = '{TOKEN}' AND LOCATION = '{LOCATION}' AND IMAGE ='{IMAGE}' AND NAME = '{NAME}' AND ADDRESS = '{ADDRESS}'"""
+
+    try:
+        # Executing the SQL command
+        cursor.execute(sql)
+
+        # Commit your changes in the database
+        conn.commit()
+        RESPONSE_MSG = "SUCCESS"
+        print("SUCCESS")
+
+    except mysql.connector.Error as e:
+        # Print the error message for debugging
+        print("Error:", e)
+        # Rolling back in case of error
+        conn.rollback()
+
+    # Closing the connection
+    conn.close()
+
+    return '', 204
+
+
 @app.route('/api/images', methods=['POST'])
 def image_search():
     data = request.get_json()
@@ -106,7 +242,7 @@ def do_search():
             imageresponse = requests.get(imageurl, headers=headers)
             imagedict = imageresponse.json()
             #print(imagedict)
-            image = imagedict['data'][0]['images']['small']['url']
+            image = imagedict['data'][0]['images']['large']['url']
             row['image'] = image
         except:
             row['image'] = '../images/placeholder.png'
@@ -141,7 +277,7 @@ def add_user():
 
 def add_userinfo(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN):
     # Boolean for tracking if username is allowed or not
-    ALLOWED_USER = False
+    ALLOWED_USER = True
 
     # establishing the connection
     conn = mysql.connector.connect(
@@ -158,8 +294,12 @@ def add_userinfo(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN):
         cursor.execute(sql)
         sqlresponse = cursor.fetchall()
 
-    except:
-        print("FAILURE")
+
+    except mysql.connector.Error as e:
+        # Print the error message for debugging
+        print("Error:", e)
+        # Rolling back in case of error
+        conn.rollback()
 
     # Iterates through usernames and if sign up username already exists, sign up will fail
     for tuples in sqlresponse:
@@ -221,6 +361,7 @@ def check_userinfo(USERNAME, PASSWORD):
     ## Set default values for token and response message
     TOKEN = ""
     RESPONSE_MSG = ""
+    FIRSTNAME = ""
 
     # establishing the connection
     conn = mysql.connector.connect(

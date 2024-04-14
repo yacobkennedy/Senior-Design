@@ -4,6 +4,9 @@ import axios from 'axios';
 import { Outlet, Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import Profile from '../components/Profile/profile';
+import NavBar from '../components/NavBar/navbar';
+import "@fontsource/maven-pro";
+import "@fontsource/maven-pro/700.css";
 
 
 function Login() {
@@ -15,6 +18,9 @@ function Login() {
 
     // State for error message if username or password is incorrect
     const [error, setError] = useState('')
+
+    // State to track email validity
+    const [isValidEmail, setIsValidEmail] = useState(true);
 
     // Var for storing login response dict so we can parse through it
     var responsedict;
@@ -29,6 +35,14 @@ function Login() {
         setPassword(event.target.value)
     }
 
+    // Function to use enter to trigger button
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          handleLogin()
+        }
+      };
+
     const navigate = useNavigate();
 
     // Handle the event to navigate back to home page after successful login
@@ -38,6 +52,18 @@ function Login() {
 
     // Function for handling login and checking credentials on the backend as well as pulling the token
     async function handleLogin() {
+        if (username === '' || password === '') {
+            setError('Please fill out all fields')
+            return
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var status = emailPattern.test(username)
+        if(status === false) {
+            setError('Please enter a valid email')
+            return
+        }
+        
         // Set object to send to API
         var userinfo = {
             USERNAME: username,
@@ -94,48 +120,54 @@ function Login() {
 
     return(
         <div className={styles.loginPage}>
+            <NavBar />
             <div className={styles.loginContainer}>
+                <div className={styles.loginWrapper}>
 
-                <div className={styles.inputContainer}>
-                    <h2 className={styles.header}>Welcome Back</h2>
+                    <div className={styles.inputContainer}>
+                        <h2 className={styles.header}>Welcome Back</h2>
 
-                    <div className={styles.emailContainer}>
-                        <input
-                            className={styles.emailInput}
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={username}
-                            onChange={handleUsernameChange}
-                            placeholder="Email"
-                        />
+                        <div className={styles.emailContainer}>
+                            <input
+                                className={styles.emailInput}
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={username}
+                                onChange={handleUsernameChange}
+                                placeholder="Email"
+                                onKeyDown={handleKeyPress}
+                            />
+                        </div>
+
+                        <div className={styles.passwordContainer}>
+                            <input
+                                className={styles.passwordInput}
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                placeholder="Password"
+                                onKeyDown={handleKeyPress}
+                            />
+                        </div>
+
+                        <p className={styles.errorMessage}>{error}</p>
+
+                        <div className={styles.buttonContainer}>
+                            <button className={styles.button} onClick={handleLogin}> Sign In </button>
+                        </div>
+
                     </div>
 
-                    <div className={styles.passwordContainer}>
-                        <input
-                            className={styles.passwordInput}
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            placeholder="Password"
-                        />
+                    <div className={styles.signupContainer}>
+                        <p>
+                            Don't have an account? <br></br>
+                            <Link to="/signup">Join Now!</Link>
+                        </p>
                     </div>
 
-                    <p className={styles.errorMessage}>{error}</p>
-
-                    <div className={styles.buttonContainer}>
-                        <button className={styles.button} onClick={handleLogin}> Sign In </button>
-                    </div>
-
-                </div>
-
-                <div className={styles.signupContainer}>
-                    <p>
-                        Don't have an account? <br></br>
-                        <Link to="/signup">Join Now!</Link>
-                    </p>
                 </div>
 
             </div>

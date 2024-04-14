@@ -1,5 +1,12 @@
+.loading {
+    filter: blur(3px); /* Apply blur effect */
+    pointer-events: none; /* Prevent user interaction */
+  }
+
 .homePage{
-    background-color: #494D5F;
+    background-image: url('../images/background.png');
+    background-size: cover;
+    background-position-y: -130px; /* Move the background up from the image */
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -18,13 +25,22 @@
     flex-direction: column;
     width: 100%;
     align-items: center;
+    justify-content: center;
 }
 
 .header{
-    text-align: center;
     font-size: 32px;
+    font-family: 'Maven Pro', sans-serif;
+    font-weight: bold;
+    left: 0;
+    width: 100%;
+    max-width: 60%; /* Adjust max-width to match the width of selectionWrapper */
+    text-align: left; /* Align text to the left */
+    color: #FFFFFF;
+    padding-left: 5px; /* Move header slightly to align with border radius curve of selection */
 }
 
 .selectionWrapper{
     width: 60%;
+    padding-bottom: 15%;
 }

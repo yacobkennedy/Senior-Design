@@ -2,25 +2,30 @@
     display: flex;
     justify-content: space-between; /* Align items to the start and end */
     align-items: center;
-    background-color: #8458B3;
+    background-color: #FFFFFF;
     flex: 10%; /* Take 10% of the available space */
     padding: 0 20px; /* Add padding for spacing */
+    box-shadow: -8px 4px 115.5px -20px rgba(0, 0, 0, 0.15);
   }
 
 .loginContainer {
     position: absolute;
     right: 10%; /* Adjust right distance as needed */
+    display: flex;
+    align-items: center;
     
 }
 
 .button{
     height: 40px;
     width: 90px;
-    background-color: black;
-    border-radius: 20px;
+    background-color: #6E25CB;
+    border-radius: 10px;
     border-style: solid;
-    color: #E5EAF5;
+    border-color: #6E25CB;
+    color: #FFFFFF;
     font-size: 16px;
+    font-family: 'Maven Pro', sans-serif;
 }
 
 .logoContainer{
@@ -34,37 +39,76 @@
     height: 40px;
     width: 40px;
     margin-right: 8px;
-    border-radius: 20px;
+    padding-top: 8px; /* moves the logo down slightly since its a circular image the alignment barely gets thrown off */
 }
 
 .logoText{
     font-size: 30px;
+    margin: 0;
+    font-family: 'Maven Pro', sans-serif;
+    font-weight: bold;
+    color: #6E25CB;
+
 }
 
 .profileContainer {
     position: relative;
-  }
-  
-  .dropdownMenu {
-    position: absolute;
-    top: calc(100% + 4px); /* Position the dropdown menu below the profile bubble */
-    right: 50%; /* Position the dropdown menu horizontally centered relative to the profile bubble */
-    transform: translateX(50%); /* Adjust the horizontal positioning to center the menu */
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
-    padding: 8px;
-  }
-  
-  .dropdownMenu button {
-    display: block;
-    width: 100%;
-    padding: 8px;
-    border: none;
-    background-color: transparent;
     cursor: pointer;
   }
   
-  .dropdownMenu button:hover {
-    background-color: #f0f0f0;
-  }
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 4px); /* Position the dropdown menu below the profile bubble */
+  right: 50%; /* Position the dropdown menu horizontally centered relative to the profile bubble */
+  transform: translateX(50%); /* Adjust the horizontal positioning to center the menu */
+  background-color: #ffffff;
+  border: 1px solid #6E25CB;
+  border-radius: 5px;
+  padding: 8px;
+  z-index: 999; /* Set a higher z-index value */
+}
+
+.dropdownMenu button {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.dropdownMenu button:hover {
+  background-color: #f0f0f0;
+}
+
+.favoritesButton {
+  position: relative;
+}
+
+.favoritesList{
+  display: none;
+  position: absolute;
+  top: calc(100%);
+  right: 50%;
+  transform: translateX(50%);
+  background-color: white;
+  border: 1px solid #6E25CB;
+  border-radius: 5px;
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.favoritesList button {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.profileContainer:hover .favoritesList,
+.favoritesList:hover {
+  display: block;
+}

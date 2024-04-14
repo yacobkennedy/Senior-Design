@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from './Signup.module.css'
 import axios from 'axios';
+import NavBar from '../components/NavBar/navbar';
+import "@fontsource/maven-pro";
+import "@fontsource/maven-pro/700.css";
 
 
 function Signup() {
@@ -47,10 +50,28 @@ function Signup() {
     const handleLastnameChange = (event) => {
         setLastname(event.target.value)
     }
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          handleSignup()
+        }
+      };
     
 
     // Function for signing up user and sending the API call
     async function handleSignup() {
+        if (username === '' || password === '' || firstname === '' || lastname === '') {
+            setError('Please fill out all fields')
+            return
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var status = emailPattern.test(username)
+        if(status === false) {
+            setError('Please enter a valid email')
+            return
+        }
         // Set object to send to API
         var userinfo = {
             USERNAME: username,
@@ -135,67 +156,74 @@ function Signup() {
 
     return(
         <div className={styles.signupPage}>
+            <NavBar />
             <div className={styles.signupContainer}>
+                <div className={styles.signupWrapper}>
 
-                <div className={styles.inputContainer}>
-                    <h2>Sign Up and Explore with Goodplaces!</h2>
+                    <div className={styles.inputContainer}>
+                        <h2>Sign Up and Explore with Goodplaces!</h2>
 
-                    <div className={styles.nameContainer}>
-                        <div className={styles.firstnameContainer}>
+                        <div className={styles.nameContainer}>
+                            <div className={styles.firstnameContainer}>
+                                <input
+                                    className={styles.firstnameInput}
+                                    type="firstname"
+                                    id="firstname"
+                                    name="firstname"
+                                    value={firstname}
+                                    onChange={handleFirstnameChange}
+                                    placeholder="First Name"
+                                    onKeyDown={handleKeyPress}
+                                />
+                            </div>
+
+                            <div className={styles.lastnameContainer}>
+                                <input
+                                    className={styles.lastnameInput}
+                                    type="lastname"
+                                    id="lastname"
+                                    name="lastname"
+                                    value={lastname}
+                                    onChange={handleLastnameChange}
+                                    placeholder="Last Name"
+                                    onKeyDown={handleKeyPress}
+                                />
+                            </div>
+                        </div>
+
+                        <div className={styles.emailContainer}>
                             <input
-                                className={styles.firstnameInput}
-                                type="firstname"
-                                id="firstname"
-                                name="firstname"
-                                value={firstname}
-                                onChange={handleFirstnameChange}
-                                placeholder="First Name"
+                                className={styles.emailInput}
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={username}
+                                onChange={handleUsernameChange}
+                                placeholder="Email"
+                                onKeyDown={handleKeyPress}
                             />
                         </div>
 
-                        <div className={styles.lastnameContainer}>
+                        <div className={styles.passwordContainer}>
                             <input
-                                className={styles.lastnameInput}
-                                type="lastname"
-                                id="lastname"
-                                name="lastname"
-                                value={lastname}
-                                onChange={handleLastnameChange}
-                                placeholder="Last Name"
+                                className={styles.passwordInput}
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                placeholder="Password"
+                                onKeyDown={handleKeyPress}
                             />
                         </div>
+
+                        <p className={styles.errorMessage}>{error}</p>
+
+                        <div className={styles.buttonContainer}>
+                            <button className={styles.button} onClick={handleSignup}> Submit </button>
+                        </div>
+
                     </div>
-
-                    <div className={styles.emailContainer}>
-                        <input
-                            className={styles.emailInput}
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={username}
-                            onChange={handleUsernameChange}
-                            placeholder="Email"
-                        />
-                    </div>
-
-                    <div className={styles.passwordContainer}>
-                        <input
-                            className={styles.passwordInput}
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            placeholder="Password"
-                        />
-                    </div>
-
-                    <p className={styles.errorMessage}>{error}</p>
-
-                    <div className={styles.buttonContainer}>
-                        <button className={styles.button} onClick={handleSignup}> Submit </button>
-                    </div>
-
                 </div>
 
             </div>
