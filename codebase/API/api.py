@@ -2,19 +2,75 @@ from flask import Flask, jsonify, request, json, Response
 import mysql.connector
 import uuid
 import requests
+import aiohttp
+import asyncio
+from datetime import datetime
 
 app = Flask(__name__)
 
-incomes = [
-    { 'description': 'salary', 'amount': 5000 }
-]
 
 
-@app.route('/incomes')
-def get_incomes():
-    return jsonify(incomes)
 
+@app.route('/api/add_review', methods=['POST'])
+def create_review():
+    conn = mysql.connector.connect(
+        user='root', password='1234', host='127.0.0.1', database="userinfo")
 
+    data = request.json
+    name = data['NAME']
+    location_id = data['LOCATION']
+    rating = data['RATING']
+    message = data['MESSAGE']
+    time = datetime.now()
+
+    cursor = conn.cursor()
+
+    # Query to check if table exists
+    query = f"SELECT 1 FROM information_schema.tables WHERE table_name = '{f"reviews_{location_id}"}' LIMIT 1"
+    cursor.execute(query)
+    result = cursor.fetchone()
+
+    # If result is not None, table exists
+    table_exists = (result is not None)
+
+    if not table_exists:
+        print(f"Creating new table for {location_id}")
+        # Create reviews table if not exists
+        create_table_query = f"""
+        CREATE TABLE IF NOT EXISTS reviews_{location_id} (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name TEXT NOT NULL,
+            rating INT NOT NULL,
+            message TEXT,
+            time TEXT
+        )
+        """
+        cursor.execute(create_table_query)
+        conn.commit()
+
+    insert_query = f"INSERT INTO reviews_{location_id} (name, rating, message, time) VALUES (%s, %s, %s, %s)"
+    cursor.execute(insert_query, (name, rating, message, time))
+    conn.commit()
+
+    return jsonify(message='Review added successfully'), 201
+
+@app.route('/api/get_reviews', methods=['GET'])
+def get_reviews():
+    conn = mysql.connector.connect(
+        user='root', password='1234', host='127.0.0.1', database="userinfo")
+    cursor = conn.cursor()
+
+    location_id = request.args.get('location_id')  # Get the location_id from query parameters
+    print("LOCATION")
+    print(location_id)
+
+    select_query = f"SELECT name, rating, message, time FROM reviews_{location_id}"
+    cursor.execute(select_query)
+    reviews = cursor.fetchall()
+
+    result = [{'name': review[0], 'rating': review[1], 'message': review[2], 'time': review[3]} for review in reviews]
+    print(result)
+    return jsonify(result)
 @app.route('/api/favorites', methods=['POST'])
 def get_favorites():
     response = []
@@ -55,6 +111,7 @@ def get_favorites():
 
 @app.route('/api/addfavorite', methods=['POST'])
 def add_favorite():
+    print("PRINTING DATA")
     data = request.get_json()
     print(data)
     TOKEN = data['TOKEN']
@@ -156,8 +213,7 @@ def image_search():
     data = request.get_json()
     print(data)
     id = data['ID']
-    #                                                          location ID           API key
-    # url = "https://api.content.tripadvisor.com/api/v1/location/17597950/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
+
     url = f"https://api.content.tripadvisor.com/api/v1/location/{id}/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
     headers = {"accept": "application/json"}
     response = requests.get(url, headers=headers)
@@ -224,34 +280,50 @@ def location_search():
 def do_search():
     userinfo = request.get_json()
     LOCATION = userinfo['LOCATION']
-    #url = "https://api.content.tripadvisor.com/api/v1/location/search?language=en"
     url = f"https://api.content.tripadvisor.com/api/v1/location/search?key=3EF0658EA2074AFD980A9729D442BE00&language=en&searchQuery={LOCATION}&language=en"
-    #url = "https://api.content.tripadvisor.com/api/v1/location/search?key=3EF0658EA2074AFD980A9729D442BE00&searchQuery=
     headers = {"accept": "application/json"}
     response = requests.get(url, headers=headers)
-    print(response.json())
 
     responsedict = response.json()
+
+    image_dict = asyncio.run(image_request(responsedict))
+
     for row in responsedict['data']:
         locationid = row['location_id']
 
         ## Adds the image link to each object in the response
         try:
-            imageurl = f"https://api.content.tripadvisor.com/api/v1/location/{locationid}/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en"
-            imageheaders = {"accept": "application/json"}
-            imageresponse = requests.get(imageurl, headers=headers)
-            imagedict = imageresponse.json()
-            #print(imagedict)
-            image = imagedict['data'][0]['images']['large']['url']
+            images = image_dict[locationid]
+            image = images['data'][0]['images']['large']['url']
             row['image'] = image
         except:
             row['image'] = '../images/placeholder.png'
 
-    print(responsedict)
-
     return jsonify(responsedict)
 
+async def image_request(Dict):
+    id_list = [location['location_id'] for location in Dict['data']]
+    headers = {"accept": "application/json"}
+    results = {}  # Dictionary to store results
 
+    async with aiohttp.ClientSession() as session:
+        async def fetch(id):
+            url = f"https://api.content.tripadvisor.com/api/v1/location/{id}/photos?key=3EF0658EA2074AFD980A9729D442BE00&language=en&limit=1"
+            async with session.get(url, headers=headers) as response:
+                result = await response.json()
+                print(f"Task for {id} is done")
+
+                return {"location_id": id, "images": result}
+
+
+        tasks = [fetch(id) for id in id_list]
+        completed_tasks = await asyncio.gather(*tasks)
+
+        # Populate results dictionary
+        for item in completed_tasks:
+            results[item["location_id"]] = item["images"]
+
+        return results
 @app.route('/api/signup', methods=['POST'])
 def add_user():
     userinfo = request.get_json()
@@ -262,6 +334,7 @@ def add_user():
     TOKEN = str(uuid.uuid4())
 
     ## DELETE LATER
+    print("Add user")
     print(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN)
 
     ## NEED TO ADD CHECK FOR DUPLICATE USERS
@@ -277,7 +350,8 @@ def add_user():
 
 def add_userinfo(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN):
     # Boolean for tracking if username is allowed or not
-    ALLOWED_USER = False
+    ALLOWED_USER = True
+    print("ADDING USER INFO")
 
     # establishing the connection
     conn = mysql.connector.connect(
@@ -290,15 +364,23 @@ def add_userinfo(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN):
     sql = f"SELECT USERNAME FROM userinfo"
 
     try:
+        print("IN TRY")
         # Executing the SQL command
         cursor.execute(sql)
         sqlresponse = cursor.fetchall()
+        #print("FAILURE")
+    except mysql.connector.Error as e:
+        print("sql error")
+        # Print the error message for debugging
+        print("Error:", e)
+        # Rolling back in case of error
+        conn.rollback()
 
-    except:
-        print("FAILURE")
-
+    RESPONSE_MSG = "UNBOUND"
+    print(sqlresponse)
     # Iterates through usernames and if sign up username already exists, sign up will fail
     for tuples in sqlresponse:
+        print("Printing tuples")
         print(tuples[0])
         if USERNAME == tuples[0]:
             RESPONSE_MSG = "FAILURE"
@@ -324,6 +406,7 @@ def add_userinfo(FIRSTNAME, LASTNAME, USERNAME, PASSWORD, TOKEN):
             RESPONSE_MSG = "SUCCESS"
 
         except:
+            RESPONSE_MSG=  "FAILURE"
             # Rolling back in case of error
             conn.rollback()
 
@@ -357,6 +440,7 @@ def check_userinfo(USERNAME, PASSWORD):
     ## Set default values for token and response message
     TOKEN = ""
     RESPONSE_MSG = ""
+    FIRSTNAME = ""
 
     # establishing the connection
     conn = mysql.connector.connect(
