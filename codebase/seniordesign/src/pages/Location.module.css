@@ -4,15 +4,17 @@
     display: flex;
     flex-direction: column;
     height: 100vh; /* Take full height of the viewport */
+    padding-bottom: 10%;
 }
 
 .locationContainer{
     flex: 90%;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    align-items: center;
+    width: 75%;
     position: relative;
+    left:12.5%;
+    right: 12.5%;
 }
 
 .headerContainer{
@@ -74,25 +76,172 @@
 
 .descriptionWrapper{
     position: absolute;
-    width: 90%;
+    width: 100%;
     left: 12.5%;
     display: flex;
     align-items: center;
     top: 60%; /* Adjust the top position to position it underneath headerWrapper */
     font-family: 'Maven Pro', sans-serif;
-    background-color: #F7F7F7;
-    width: 40%;
-    border-radius: 20px;
+    background-color: #e4e4e4;
+    border-radius: 0px 0px 20px 20px;
+    width:700px;
+    box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.25);
+    border-top:10px solid #6E25CB;
 }
 
 .description{
     width: 100%;
     padding: 10px;
     margin: 16px;
+    font-size: 20px;
 }
 
 .imageContainer{
     position: absolute;
     top: 20%;
     left: 12.5%;
+    object-fit: cover;
+    box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
 }
+
+.review_block {
+    width:500px;
+    height: 600px;
+    position: absolute;
+    left: 65%;
+    top: 20%;
+    max-height: 600px;
+    background-color: #d0d0d0;
+    border-radius: 5%;
+    display: flex;
+    padding: 1%;
+    box-shadow: 0px 0px 8px 8px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 1800px) {
+    .review_block {
+        position: relative;
+        top: 80%;
+        justify-content: center;
+        align-content: center;
+        left:12.5%;
+        height:auto;
+        max-height: none;
+        margin-top: 10%;
+        width: 700px;
+    }
+  }
+
+button {
+
+  }
+
+  .popup {
+    position: absolute;
+    margin-top: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(175, 1, 214, 0.468);
+    z-index: 1000;
+    overflow-y: auto; /* Enable vertical scroll */
+    max-height: 80vh; /* Set max height to 80% of the viewport height */
+  }
+  
+  /* Styles for the popup content */
+  .popup-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 5px;
+  }
+  
+  /* Styles for the close button */
+  .Cancel {
+    color: #ffffff;
+    background-color: #6E25CB;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .Cancel:hover,
+  .Cancel:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .reviewList {
+    list-style-type: none;
+    padding: 0;
+    max-height: 550px; /* Set max height as needed */
+    overflow-y: auto; /* Enable vertical scroll */
+    width: 100%;
+  }
+  
+  .reviewItem {
+    padding: 10px;
+    border-bottom: 3px solid #6E25CB;
+  }
+
+  .reviewButton {
+    border-radius: 5%;
+    cursor: pointer;
+    height: 30px;
+    position: absolute;
+    left: 40%;
+    background-color: #6E25CB;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: #6E25CB;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: 'Maven Pro', sans-serif;
+    margin-bottom: 5px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    background-color: white;
+    color:#6E25CB;
+    border-radius: 5px;
+    max-height: 60%;
+  }
+
+  /* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+  }
+
+  /* Handle */
+::-webkit-scrollbar-thumb {
+    background: #6E25CB;
+    border-radius: 5px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6E25CB;
+    border-radius: 5px;
+  }
+
+  .Submit{
+    background-color: #6E25CB;
+    color: white;
+    border-radius: 5px;
+  }
+
+  .Submit:hover,
+  .Submit:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }

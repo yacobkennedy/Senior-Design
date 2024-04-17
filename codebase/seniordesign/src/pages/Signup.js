@@ -101,7 +101,7 @@ function Signup() {
         console.log("msg", responseMsg)
 
         if(responseMsg === "FAILURE") {
-            setError("Username is already in use, please try again")
+            setError("Email is already in use, please use a different email")
         }
         else{
             handleLogin()
