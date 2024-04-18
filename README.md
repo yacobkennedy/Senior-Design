@@ -34,7 +34,6 @@ We're creating a site like TripAdvisor capable of returning events, attractions,
 - [Brendan Pollak](./professional-bios/BPBio.md)
 
 ## Project Video Demo
-- Video is in the homework stuff folder
 - [Youtube Link](https://youtu.be/jwI-czIvZ5k)
 
 ## Budget
